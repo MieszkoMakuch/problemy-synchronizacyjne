@@ -1,0 +1,1 @@
+/usr/bin/cc  -g   CMakeFiles/dining-philosophers-resource-hierarchy.dir/dining-philosophers-resource-hierarchy.c.o CMakeFiles/dining-philosophers-resource-hierarchy.dir/error.c.o  -o dining-philosophers-resource-hierarchy 

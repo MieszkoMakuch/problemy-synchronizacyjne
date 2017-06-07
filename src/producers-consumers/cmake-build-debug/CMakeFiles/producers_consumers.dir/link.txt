@@ -1,0 +1,1 @@
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -g -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/producers_consumers.dir/error.c.o CMakeFiles/producers_consumers.dir/producers-consumers.c.o  -o producers_consumers 

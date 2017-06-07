@@ -1,0 +1,3 @@
+/Users/mieszkomakuch/Documents/Informatyka IET/Semestr IV/SysOpy/Projekt/projekt_08/producers-consumers/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/mieszkomakuch/Documents/Informatyka IET/Semestr IV/SysOpy/Projekt/projekt_08/producers-consumers/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/mieszkomakuch/Documents/Informatyka IET/Semestr IV/SysOpy/Projekt/projekt_08/producers-consumers/cmake-build-debug/CMakeFiles/producers_consumers.dir

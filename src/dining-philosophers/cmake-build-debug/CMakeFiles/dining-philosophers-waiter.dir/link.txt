@@ -1,0 +1,1 @@
+/usr/bin/cc  -g   CMakeFiles/dining-philosophers-waiter.dir/dining-philosophers-waiter.c.o CMakeFiles/dining-philosophers-waiter.dir/error.c.o  -o dining-philosophers-waiter 

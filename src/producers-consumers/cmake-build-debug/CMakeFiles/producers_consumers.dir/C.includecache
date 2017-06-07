@@ -1,0 +1,36 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/mieszkomakuch/Documents/Informatyka IET/Semestr IV/SysOpy/Projekt/projekt_08/producers-consumers/error.c
+stdio.h
+-
+stdlib.h
+-
+
+/Users/mieszkomakuch/Documents/Informatyka IET/Semestr IV/SysOpy/Projekt/projekt_08/producers-consumers/error.h
+
+/Users/mieszkomakuch/Documents/Informatyka IET/Semestr IV/SysOpy/Projekt/projekt_08/producers-consumers/producers-consumers.c
+stdio.h
+-
+stdlib.h
+-
+signal.h
+-
+pthread.h
+-
+memory.h
+-
+stdbool.h
+-
+stdint.h
+-
+semaphore.h
+-
+error.h
+/Users/mieszkomakuch/Documents/Informatyka IET/Semestr IV/SysOpy/Projekt/projekt_08/producers-consumers/error.h
+

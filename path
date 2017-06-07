@@ -1,2 +1,4 @@
 export PATH=~/.composer/vendor/bin:$PATH
 couscous preview
+
+couscous deploy
