@@ -46,7 +46,7 @@
                             </p>
 
                             <ul class="nav nav-pills nav-stacked">
-                                                                    <li class="">
+                                                                    <li class="active">
                                         <a href="/doc/faq.html">
                                             Home page
                                         </a>
@@ -68,73 +68,60 @@
 
                 
                 <section class="col-sm-9 col-lg-10 content">
-                    <h1 id="fake-news-detector">Fake news detector</h1>
-<p>Article and domain analyzer written in python 3 to help user detect fake news content.</p>
-<h2 id="online-demo">Online demo</h2>
-<p>View a working online demo here (it may take a few seconds to deploy):</p>
-<h4><a href="https://protected-inlet-79294.herokuapp.com/">Online demo</a></h4>
-<h4><a href="https://github.com/MieszkoMakuch/fakenews-detector-demo">Demo - Github repository</a></h4>
-<h3 id="try-to-paste-this-examples-and-see-the-results">Try to paste this examples and see the results.</h3>
-<h4 id="analysis-based-on-human-maintained-lists">Analysis based on human maintained lists:</h4>
-<p>Fake, junk science:</p>
-<p><code>http://www.ancient-code.com/did-ancient-mankind-know-the-secrets-of-levitation/</code></p>
-<p>Warning, gossip:</p>
-<p><code>http://en.mediamass.net/people/colin-hanks/married.html</code></p>
-<p>Real, Credible:</p>
-<p><code>http://www.bbc.com/news/uk-40148737</code></p>
-<h4 id="analysis-based-on-ai">Analysis based on AI:</h4>
-<p>Fake:</p>
-<p><code>http://aszdziennik.pl/120211,akcja-fanow-na-koncercie-kings-of-leon-w-czasie-use-somebody-odloza-smartfony-i-popatrza-na-scene</code></p>
-<p><code>http://dziennikbulwarowy.pl/146/straszyl-wiernych-przez-megafon.html#edytuj</code></p>
-<p>Real:</p>
-<p><code>http://wyborcza.pl/7,154903,21913047,liga-legii-mistrzostwo-zostaje-w-warszawie.html</code></p>
-<h2 id="motivation">Motivation</h2>
-<p>The Oxford Dictionaries Word of the Year 2016 was post-truth – an adjective defined as ‘relating to or denoting circumstances in which objective facts are less influential in shaping public opinion than appeals to emotion and personal belief’.</p>
-<p>This program scrutinizes information available on the Internet, performs machine learning analysis and assists the user in verifying the credibility of the found information.</p>
-<h2 id="install">Install</h2>
-<pre><code class="language-bash">pip install fakenews_detector</code></pre>
-<p>Package installs successfully on macOS and heroku. However, you will run into some issues if you are trying to install on ubuntu.</p>
-<h2 id="usage-example">Usage example</h2>
-<p>You can find more usage examples in <code>examples/</code> folder, also as the jupyter notebook.</p>
-<h3 id="example-fake-news-detection">Example: fake news detection</h3>
-<pre><code class="language-python">from fakenews_detector.main import check_news, info_to_str
+                    <h1 id="couscous-native-template">Couscous 'Native' Template</h1>
+<p>This template is build based of the Couscous Dark template for one of my open source project. You could see this template in action on <a href="http://pnowy.github.io/NativeCriteria/">NativeCriteria</a> GitHub project.</p>
+<p><img src="screenshot.png" alt="" /></p>
+<h2 id="usage">Usage</h2>
+<p>To use the template, set it up in your <code>couscous.yml</code> configuration file:</p>
+<pre><code class="language-yaml">template:
+    url: https://github.com/pnowy/CouscousNativeTemplate</code></pre>
+<h2 id="configuration">Configuration</h2>
+<p>Here are all the variables you can set in your <code>couscous.yml</code>:</p>
+<pre><code class="language-yaml"># Base URL of the published website
+baseUrl: http://username.github.io/project
 
-# Some page with fake news
-url_100PercentFedUp = 'http://100percentfedup.com/comedian-kathy-griffins-7th-final-venue-cancelswhos-laughing-now/'
+# Used to link to the GitHub project
+github:
+    user: myself
+    repo: my-project
 
-print(info_to_str(check_news(url_100PercentFedUp)))
-</code></pre>
-<p>Output:</p>
-<pre><code>Checking domain: 100percentfedup.com
-Source: OpenSource http://www.opensources.co/
-    Verdict1: Fake
-        Category: bias
-        Description: Extreme Bias - Sources that come from a particular point of view and may rely on propaganda, decontextualized information, and opinions distorted as facts.
-Source: FakeNewsDB
-    Verdict1: Warning
-        Category: clickbait
-        Description: Clickbait - Sources that provide generally credible content, but use exaggerated, misleading, or questionable headlines, social media descriptions, and/or images.
-        Source note 1: Political alignment: right
-</code></pre>
-<h3 id="example-credible-source">Example: credible source</h3>
-<pre><code class="language-python">from fakenews_detector.main import check_news, info_to_str
+title: My project
+subTitle: This is a great project.
+# the icon next to page title from Font Awesome library
+fontAwesomeIcon: fa fa-hand-peace-o
+footerText: This is a footer text
+googleAnalyticsCode: GOOGLE-ANALYTICS-CODE
 
-# Credible source
-url_bbc = 'http://www.bbc.com/news/uk-40148737'
-print(info_to_str(check_news(url_bbc)))
-</code></pre>
-<p>Output:</p>
-<pre><code>Checking domain: bbc.com
-Source: OpenSource http://www.opensources.co/
-    Verdict1: Real
-        Category: reliable
-        Description: Credible - Sources that circulate news and information in a manner consistent with traditional and ethical practices in journalism (Remember: even credible sources sometimes rely on clickbait-style headlines or occasionally make mistakes. No news organization is perfect, which is why a healthy news diet consists of multiple sources of information).
-Source: Artificial intelligence
-    Verdict1: Real
-        Category: Real News
-        Description: Analysis performed by artificial intelligence indicate that this article is credible
-        Source note 1: WARNING: This result may be inaccurate! This domain wasn't categorised on any human maintained list thus analysis was performed by machine learning module.
-</code></pre>
+# The left menu bar
+menu:
+    sections:
+        main:
+            name: Main documentation
+            items:
+                home:
+                    text: Home page
+                    # You can use relative urls
+                    relativeUrl: doc/faq.html
+                foo:
+                    text: Another link
+                    # Or absolute urls
+                    absoluteUrl: https://example.com
+        other:
+            name: Other topics
+            items:</code></pre>
+<p>Note that the menu items can also contain HTML:</p>
+<pre><code class="language-yaml">home:
+    text: "&lt;i class=\"fa fa-github\"&gt;&lt;/i&gt; Home page"
+    relativeUrl: doc/faq.html</code></pre>
+<h2 id="menu">Menu</h2>
+<p>To set the current menu item (i.e. highlighted menu item), set the <code>currentMenu</code>
+key in the Markdown files:</p>
+<pre><code>markdown
+---
+currentMenu: home
+---
+
+# Welcome</code></pre>
                 </section>
 
             </div>
