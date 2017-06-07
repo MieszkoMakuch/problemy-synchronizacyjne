@@ -1,4 +1,4 @@
-# Fake news detector1
+# Fake news detector
 Article and domain analyzer written in python 3 to help user detect fake news content.
 
 ## Online demo
