@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Native Couscous template</title>
+        <title>Problemy synchronizacyjne</title>
 
         <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Merriweather:400,900,700,300|Open+Sans:400,800,700|Titillium+Web:600,400' type='text/css'>
         <link rel="stylesheet" href="https://mieszkomakuch.github.io/problemy-synchronizacyjne/css/bootstrap.min.css">
@@ -17,18 +17,18 @@
         <header class="site-header">
             <div class="site-branding">
                 <h1 class="site-name">
-                    <a href="https://mieszkomakuch.github.io/problemy-synchronizacyjne" >Native Couscous template</a>&nbsp;&nbsp;<i class="fa fa-hand-peace-o"></i>
+                    <a href="https://mieszkomakuch.github.io/problemy-synchronizacyjne" >Problemy synchronizacyjne</a>&nbsp;&nbsp;<i class="fa fa-hand-peace-o"></i>
                 </h1>
-                <h2 class="site-description">The template for Couscous</h2>
+                <h2 class="site-description">Projekt z systemów operacyjnych</h2>
             </div>
 
             <div class="button-line">
-                <a href="https://github.com/pnowy/CouscousNativeTemplate" target="_blank" class="btn btn-default">View on GitHub</a>
-                <a href="https://github.com/pnowy/CouscousNativeTemplate/zipball/master" class="btn btn-default hidden-xs">Download .zip</a>
-                <a href="https://github.com/pnowy/CouscousNativeTemplate/tarball/master" class="btn btn-default hidden-xs">Download .tar.gz</a>
+                <a href="https://github.com/mieszkomakuch/problemy-synchronizacyjne" target="_blank" class="btn btn-default">View on GitHub</a>
+                <a href="https://github.com/mieszkomakuch/problemy-synchronizacyjne/zipball/master" class="btn btn-default hidden-xs">Download .zip</a>
+                <a href="https://github.com/mieszkomakuch/problemy-synchronizacyjne/tarball/master" class="btn btn-default hidden-xs">Download .tar.gz</a>
             </div>
 
-                            <a href="https://github.com/pnowy/CouscousNativeTemplate">
+                            <a href="https://github.com/mieszkomakuch/problemy-synchronizacyjne">
                     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
                 </a>
             
@@ -42,86 +42,48 @@
 
                                     <nav id="sidebar" class="col-sm-3 col-lg-2 collapse in" role="navigation">
                                                     <p class="text-muted">
-                                Main documentation
+                                Problemy synchronizacyjne
                             </p>
 
                             <ul class="nav nav-pills nav-stacked">
-                                                                    <li class="active">
-                                        <a href="https://mieszkomakuch.github.io/problemy-synchronizacyjne/doc/faq.html">
-                                            Home page
+                                                                    <li class="">
+                                        <a href="https://mieszkomakuch.github.io/problemy-synchronizacyjne//">
+                                            Strona główna
                                         </a>
                                     </li>
                                                                     <li class="">
-                                        <a href="https://example.com">
-                                            Another link
+                                        <a href="https://mieszkomakuch.github.io/problemy-synchronizacyjne/doc/readers-writers.html">
+                                            Problem czytelników i pisarzy
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="https://mieszkomakuch.github.io/problemy-synchronizacyjne/doc/producers-consumers.html">
+                                            Problem producentów i konsumentów
+                                        </a>
+                                    </li>
+                                                                    <li class="">
+                                        <a href="https://mieszkomakuch.github.io/problemy-synchronizacyjne/doc/dining-philosophers.html">
+                                            Problem ucztujących filozofów
                                         </a>
                                     </li>
                                                             </ul>
                                                     <p class="text-muted">
-                                Other topics
+                                Przydatne linki
                             </p>
 
                             <ul class="nav nav-pills nav-stacked">
+                                                                    <li class="">
+                                        <a href="https://example.com">
+                                            Example
+                                        </a>
+                                    </li>
                                                             </ul>
                         
                     </nav>
 
                 
                 <section class="col-sm-9 col-lg-10 content">
-                    <h1 id="couscous-native-template">Couscous 'Native' Template</h1>
-<p>This template is build based of the Couscous Dark template for one of my open source project. You could see this template in action on <a href="http://pnowy.github.io/NativeCriteria/">NativeCriteria</a> GitHub project.</p>
-<p><img src="screenshot.png" alt="" /></p>
-<h2 id="usage">Usage</h2>
-<p>To use the template, set it up in your <code>couscous.yml</code> configuration file:</p>
-<pre><code class="language-yaml">template:
-    url: https://github.com/pnowy/CouscousNativeTemplate</code></pre>
-<h2 id="configuration">Configuration</h2>
-<p>Here are all the variables you can set in your <code>couscous.yml</code>:</p>
-<pre><code class="language-yaml"># Base URL of the published website
-baseUrl: http://username.github.io/project
-
-# Used to link to the GitHub project
-github:
-    user: myself
-    repo: my-project
-
-title: My project
-subTitle: This is a great project.
-# the icon next to page title from Font Awesome library
-fontAwesomeIcon: fa fa-hand-peace-o
-footerText: This is a footer text
-googleAnalyticsCode: GOOGLE-ANALYTICS-CODE
-
-# The left menu bar
-menu:
-    sections:
-        main:
-            name: Main documentation
-            items:
-                home:
-                    text: Home page
-                    # You can use relative urls
-                    relativeUrl: doc/faq.html
-                foo:
-                    text: Another link
-                    # Or absolute urls
-                    absoluteUrl: https://example.com
-        other:
-            name: Other topics
-            items:</code></pre>
-<p>Note that the menu items can also contain HTML:</p>
-<pre><code class="language-yaml">home:
-    text: "&lt;i class=\"fa fa-github\"&gt;&lt;/i&gt; Home page"
-    relativeUrl: doc/faq.html</code></pre>
-<h2 id="menu">Menu</h2>
-<p>To set the current menu item (i.e. highlighted menu item), set the <code>currentMenu</code>
-key in the Markdown files:</p>
-<pre><code>markdown
----
-currentMenu: home
----
-
-# Welcome</code></pre>
+                    <h1 id="problem-czytelnikw-i-pisarzy">Problem czytelników i pisarzy</h1>
                 </section>
 
             </div>
@@ -132,7 +94,7 @@ currentMenu: home
             <div class="bottom-panel">
                 <div class="text-center">
             <span>
-                                    This is a footer text
+                                    Przygotował Mieszko Makuch
                                                 </span>
                 </div><!-- text-center -->
             </div><!-- bottom-panel -->
