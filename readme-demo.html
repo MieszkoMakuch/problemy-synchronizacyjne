@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title></title>
+
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/css/highlight.dark.css">
+        <link rel="stylesheet" href="/css/main.css">
+    </head>
+    <body>
+
+        <header class="navbar navbar-default navbar-fixed-top">
+
+            <a class="navbar-brand" href="/">
+                The title
+                <small class="hidden-xs hidden-sm">
+                    This is the default subtitle!
+                </small>
+            </a>
+
+            
+        </header>
+
+        <main class="container">
+            <div class="row">
+
+                
+                <section id="content" class="col-sm-12">
+                    <h1 id="fake-news-detector-demo">Fake news detector demo</h1>
+<p>Demo of my <strong>Fake news detector</strong> python package. </p>
+<p><strong>Fake news detector</strong> is article and domain analyzer written in python 3 to help user detect fake news content.</p>
+<p>Visit <a href="https://protected-inlet-79294.herokuapp.com/"><a href="https://protected-inlet-79294.herokuapp.com/">https://protected-inlet-79294.herokuapp.com/</a></a> for the demo.</p>
+<p>Check out github repository: <a href="https://github.com/MieszkoMakuch/fakenews-detector">fakenews-detector</a> </p>
+<h2 id="example-urls">Example urls</h2>
+<p>Try to paste this examples and see the results.</p>
+<h4 id="analysis-based-on-human-maintained-lists">Analysis based on human maintained lists:</h4>
+<p>Fake, junk science:</p>
+<p><code>http://www.ancient-code.com/did-ancient-mankind-know-the-secrets-of-levitation/</code></p>
+<p>Warning, gossip:</p>
+<p><code>http://en.mediamass.net/people/colin-hanks/married.html</code></p>
+<p>Real, Credible:</p>
+<p><code>http://www.bbc.com/news/uk-40148737</code></p>
+<h4 id="analysis-based-on-ai">Analysis based on AI:</h4>
+<p>Fake:</p>
+<p><code>http://aszdziennik.pl/120211,akcja-fanow-na-koncercie-kings-of-leon-w-czasie-use-somebody-odloza-smartfony-i-popatrza-na-scene</code></p>
+<p><code>http://dziennikbulwarowy.pl/146/straszyl-wiernych-przez-megafon.html#edytuj</code></p>
+<p>Real:</p>
+<p><code>http://wyborcza.pl/7,154903,21913047,liga-legii-mistrzostwo-zostaje-w-warszawie.html</code></p>
+                </section>
+
+            </div>
+        </main>
+
+        <footer>
+            <div class="container">
+                <p class="text-muted">
+                    website generated with <a href="http://couscous.io" title="Markdown website generator">Couscous</a>
+                </p>
+            </div>
+        </footer>
+
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script src="//yastatic.net/highlightjs/8.2/highlight.min.js"></script>
+
+        <script>
+            $(function() {
+                $("section>h1").wrap('<div class="page-header" />');
+                // Syntax highlighting
+                hljs.initHighlightingOnLoad();
+            });
+        </script>
+
+    </body>
+</html>
