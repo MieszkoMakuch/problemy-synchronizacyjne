@@ -1,96 +1,25 @@
-# Problemy synchronizacyjne 2:15
-Article and domain analyzer written in python 3 to help user detect fake news content.
+# Wprowadzenie
+Problem synchronizacji procesów pojawia się wszędzie tam, gdzie mamy do czynienia ze współpracującymi ze sobą współbieżnymi procesami. Oto najczęściej spotykane przyczyny, dla których konieczna jest synchronizacja współpracujących procesów:
+- Procesy współdzielą pewną strukturę danych
+- Wyniki działania jednego procesu stanowią dane dla innego procesu.
+- Procesy korzystają z pewnej wspólnej puli zasobów, które pobierają i zwalniają wedle potrzeb.
 
-## Online demo
-View a working online demo here (it may take a few seconds to deploy):
+Projekt ma na celu analizę i prezentację problemów synchronizacji
+współpracujących ze sobą procesów współbierznych. Mechanizmy i techniki
+progamistyczne służące do synchronizowana procesów zostaną
+zaprezentowane na **3 znanych problemach synchronizacyjnych**.
 
-#### [Online demo](https://protected-inlet-79294.herokuapp.com/)
+## Problem ucztujących filozofów
+Problem ucztujących filozofów to klasyczny informatyczny problem synchronizacji. Jest to teoretyczne wyjaśnienie zakleszczenia i uniemożliwienia innym jednostkom korzystania z zasobów poprzez założenie, że każdy z filozofów bierze po jedym widelcu / po jednej pałeczce (do jedzenia ryżu), a dopiero potem próbuje zdobyć drgugi / drugą. Zakłada się, że jedzenie jedym widalecem / jedną pałeczką jest niemożliwe.
 
-#### [Demo - Github repository](https://github.com/MieszkoMakuch/fakenews-detector-demo)
+![at_the_table](https://mieszkomakuch.github.io/problemy-synchronizacyjne/img/at_the_table.png)
 
-### Try to paste this examples and see the results.
-#### Analysis based on human maintained lists:
-Fake, junk science:
+Problem ucztujących filozofów jest prezentacją problemu synchronizacji pracujących współbieżnie procesów. Istnieje kilka możliwych rozwiązań tego problemu, które zostały rozwiązane w tym projekcie.
 
-`http://www.ancient-code.com/did-ancient-mankind-know-the-secrets-of-levitation/`
+## Problem czytelników i pisarzy
+Problem czytelników i pisarzy to kolejny, znany problem synchronizacji. Dotyczy on dostępu do jednego zasobu dwóch rodzajów procesów: dokonujących w nim zmian (pisarzy) i niedokonujących w nim zmian (czytelników).
 
-Warning, gossip:
+Jednoczesny dostęp do zasobu może uzyskać dowolna liczba czytelników. Pisarz może otrzymać tylko dostęp wyłączny. Równocześnie z pisarzem dostępu do zasobu nie może otrzymać ani inny pisarz, ani czytelnik, gdyż mogłoby to spowodować błędy.
 
-`http://en.mediamass.net/people/colin-hanks/married.html`
-
-Real, Credible:
-
-`http://www.bbc.com/news/uk-40148737`
-
-#### Analysis based on AI:
-Fake:
-
-`http://aszdziennik.pl/120211,akcja-fanow-na-koncercie-kings-of-leon-w-czasie-use-somebody-odloza-smartfony-i-popatrza-na-scene`
-
-`http://dziennikbulwarowy.pl/146/straszyl-wiernych-przez-megafon.html#edytuj`
-
-Real:
-
-`http://wyborcza.pl/7,154903,21913047,liga-legii-mistrzostwo-zostaje-w-warszawie.html`
-
-## Motivation
-The Oxford Dictionaries Word of the Year 2016 was post-truth – an adjective defined as ‘relating to or denoting circumstances in which objective facts are less influential in shaping public opinion than appeals to emotion and personal belief’.
-
-This program scrutinizes information available on the Internet, performs machine learning analysis and assists the user in verifying the credibility of the found information.
-
-## Install
-```bash
-pip install fakenews_detector
-```
-Package installs successfully on macOS and heroku. However, you will run into some issues if you are trying to install on ubuntu.
-## Usage example
-You can find more usage examples in `examples/` folder, also as the jupyter notebook.
-
-### Example: fake news detection
-```python
-from fakenews_detector.main import check_news, info_to_str
-
-# Some page with fake news
-url_100PercentFedUp = 'http://100percentfedup.com/comedian-kathy-griffins-7th-final-venue-cancelswhos-laughing-now/'
-
-print(info_to_str(check_news(url_100PercentFedUp)))
-
-```
-Output:
-```
-Checking domain: 100percentfedup.com
-Source: OpenSource http://www.opensources.co/
-	Verdict1: Fake
-		Category: bias
-		Description: Extreme Bias - Sources that come from a particular point of view and may rely on propaganda, decontextualized information, and opinions distorted as facts.
-Source: FakeNewsDB
-	Verdict1: Warning
-		Category: clickbait
-		Description: Clickbait - Sources that provide generally credible content, but use exaggerated, misleading, or questionable headlines, social media descriptions, and/or images.
-		Source note 1: Political alignment: right
-
-```
-### Example: credible source
-```python
-from fakenews_detector.main import check_news, info_to_str
-
-# Credible source
-url_bbc = 'http://www.bbc.com/news/uk-40148737'
-print(info_to_str(check_news(url_bbc)))
-
-```
-Output:
-```
-Checking domain: bbc.com
-Source: OpenSource http://www.opensources.co/
-	Verdict1: Real
-		Category: reliable
-		Description: Credible - Sources that circulate news and information in a manner consistent with traditional and ethical practices in journalism (Remember: even credible sources sometimes rely on clickbait-style headlines or occasionally make mistakes. No news organization is perfect, which is why a healthy news diet consists of multiple sources of information).
-Source: Artificial intelligence
-	Verdict1: Real
-		Category: Real News
-		Description: Analysis performed by artificial intelligence indicate that this article is credible
-		Source note 1: WARNING: This result may be inaccurate! This domain wasn't categorised on any human maintained list thus analysis was performed by machine learning module.
-
-
-```
+## Problem producenta i konsumenta
+Ostatnim problemem synchronizacyjnym, który zostanie przestawiony jest problem producenta i konsumenta. W problemie występują dwa rodzaje procesów: producent i konsument, którzy dzielą wspólny zasób - bufor dla produkowanych (konsumowanych) jednostek. Zadaniem producenta jest wytworzenie produktu, umieszczenie go w buforze i rozpoczęcie pracy od nowa. W tym samym czasie konsument ma pobrać produkt z bufora. Problemem jest taka synchronizacja procesów, żeby producent nie dodawał nowych jednostek gdy bufor jest pełny, a konsument nie pobierał gdy bufor jest pusty.

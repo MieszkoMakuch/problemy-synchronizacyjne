@@ -26,12 +26,11 @@
     </div>
 
     <div class="button-line">
-        <a href="https://github.com/{{ github.user }}/{{ github.repo }}" target="_blank" class="btn btn-default">View on
-            GitHub</a>
+        <a href="https://github.com/{{ github.user }}/{{ github.repo }}" target="_blank" class="btn btn-default">Sprawdź projekt na GitHubie</a>
         <a href="https://github.com/{{ github.user }}/{{ github.repo }}/zipball/master"
-           class="btn btn-default hidden-xs">Download .zip</a>
-        <a href="https://github.com/{{ github.user }}/{{ github.repo }}/tarball/master"
-           class="btn btn-default hidden-xs">Download .tar.gz</a>
+           class="btn btn-default hidden-xs">Pobierz .zip</a>
+        {#<a href="https://github.com/{{ github.user }}/{{ github.repo }}/tarball/master"#}
+           {#class="btn btn-default hidden-xs">Download .tar.gz</a>#}
     </div>
 
     {% if github is defined %}

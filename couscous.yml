@@ -21,6 +21,10 @@ menu:
                     text: Strona główna
                     # You can use relative urls
                     relativeUrl: /
+                dining-philosophers:
+                    text: Problem ucztujących filozofów
+                    # You can use relative urls
+                    relativeUrl: doc/dining-philosophers.html
                 readers-writers:
                     text: Problem czytelników i pisarzy
                     # You can use relative urls
@@ -29,10 +33,6 @@ menu:
                     text: Problem producentów i konsumentów
                     # You can use relative urls
                     relativeUrl: doc/producers-consumers.html
-                dining-philosophers:
-                    text: Problem ucztujących filozofów
-                    # You can use relative urls
-                    relativeUrl: doc/dining-philosophers.html
         other:
             name: Przydatne linki
             items:
