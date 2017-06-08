@@ -237,6 +237,58 @@ pisarz() {
   wmutex.post();
 }</code></pre>
 <h3><a href="https://mieszkomakuch.github.io/problemy-synchronizacyjne/doc/readers-writers-rwp2.html">Pełne rozwiązanie</a></h3>
+<h2 id="wariant-bez-godzenia">Wariant bez głodzenia</h2>
+<p>Wariant ten zakłąda równoczesne wyeliminowanie możliwości zagłodzenia obu typów procesów.</p>
+<h3 id="pseudokod-rozwizania-2">Pseudokod rozwiązania</h3>
+<pre><code class="language-cpp">int ilosc_czytelnikow;                  // inicjalizuj do 0
+
+// wszystkie semafory zainicjalizowane 1
+semafor zrodlo;       
+semafor ilosc_czytelnikow;      
+semafor kolejka;         
+
+void pisarz()
+{
+    kolejka.wait();          
+    // &lt;ENTER&gt;
+    zrodlo.wait();         
+    // &lt;/ENTER&gt;
+    kolejka.post();           
+
+    // &lt;PISZ&gt;
+    writezrodlo();            // Odbywa się pisanie
+    // &lt;/PISZ&gt;
+
+    // &lt;EXIT&gt;
+    zrodlo.post();         
+    // &lt;/EXIT&gt;
+}
+
+void czytelnik()
+{
+    kolejka.wait();           
+    ilosc_czytelnikow.wait();        
+    // &lt;ENTER&gt;
+    if (ilosc_czytelnikow == 0)         
+        zrodlo.wait();     
+    ilosc_czytelnikow++;               
+    // &lt;/ENTER&gt;
+    kolejka.post();           
+    ilosc_czytelnikow.post();       
+
+    // &lt;READ&gt;
+    readzrodlo();             
+    // &lt;/READ&gt;
+
+    ilosc_czytelnikow.wait();        
+    // &lt;EXIT&gt;
+    ilosc_czytelnikow--;                
+    if (ilosc_czytelnikow == 0)        
+        zrodlo.post();    
+    // &lt;/EXIT&gt;
+    ilosc_czytelnikow.post();        
+}</code></pre>
+<h3><a href="https://mieszkomakuch.github.io/problemy-synchronizacyjne/doc/readers-writers-rwp3.html">Pełne rozwiązanie</a></h3>
         </section>
 
     </div>
