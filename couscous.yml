@@ -41,23 +41,14 @@ menu:
                 readers-writers-rwp3:
                     text: Rozwiązanie bez zagłodzenia
                     relativeUrl: doc/readers-writers-rwp3.html
-        other:
-            name: Problemy synchronizacyjne
+        producers-consumers:
+            name: Problem producentów i konsumentów
             items:
-                dining-philosophers:
-                    text: Problem ucztujących filozofów
-                    relativeUrl: doc/dining-philosophers.html
-                readers-writers:
-                    text: Problem czytelników i pisarzy
-                    relativeUrl: doc/readers-writers.html
                 producers-consumers:
-                    text: Problem producentów i konsumentów
+                    text: Opis problemu
                     relativeUrl: doc/producers-consumers.html
-        links:
-            name: Przydatne linki
-            items:
-                foo:
-                    text: Example
-                    # Or absolute urls
-                    absoluteUrl: https://example.com
+                producers-consumers-solution:
+                    text: Rozwiązanie dla wielu producetnów i konsumentów
+                    relativeUrl: doc/producers-consumers-source.html
+
 baseUrl: https://mieszkomakuch.github.io/problemy-synchronizacyjne
