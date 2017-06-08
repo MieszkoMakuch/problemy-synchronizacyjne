@@ -81,66 +81,108 @@
         
         <section class="col-sm-9 col-lg-10 content">
             <h1 id="problem-ucztujcych-filozofw">Problem ucztujących filozofów</h1>
-<p>Problem ucztujących filozofów to klasyczny informatyczny problem synchronizacji. Jest to teoretyczne wyjaśnienie zakleszczenia i uniemożliwienia innym jednostkom korzystania z zasobów poprzez założenie, że każdy z filozofów bierze po jedym widelcu / po jednej pałeczce (do jedzenia ryżu), a dopiero potem próbuje zdobyć drgugi / drugą. Zakłada się, że jedzenie jedym widalecem / jedną pałeczką jest niemożliwe.</p>
-<p><img src="https://mieszkomakuch.github.io/problemy-synchronizacyjne/img/at_the_table.png" alt="at_the_table" /></p>
-<p>Problem ucztujących filozofów jest prezentacją problemu synchronizacji pracujących współbieżnie procesów.</p>
-<p>W projekcie zaprezentowane zostały 2 rozwiązania:</p>
-<ul>
-<li><strong>rozwiązanie z hierarhią zasobów</strong></li>
-<li><strong>rozwiązanie z kelnerem/arbitrem</strong></li>
-</ul>
-<h2 id="opis-problemu">Opis problemu</h2>
-<p>Pięciu filozofów siedzi przy stole i każdy wykonuje jedną z dwóch czynności – albo je, albo rozmyśla. Stół jest okrągły, przed każdym z nich znajduje się miska ze spaghetti, a pomiędzy każdą sąsiadującą parą filozofów leży widelec, a więc każda osoba ma przy sobie dwie sztuki – po swojej lewej i prawej stronie. Ponieważ jedzenie potrawy jest trudne przy użyciu jednego widelca, zakłada się, że każdy filozof korzysta z dwóch. Dodatkowo nie ma możliwości skorzystania z widelca, który nie znajduje się bezpośrednio przed daną osobą. Problem ucztujących filozofów jest czasami przedstawiany przy użyciu ryżu, który musi być jedzony dwiema pałeczkami, co lepiej obrazuje sytuację.</p>
-<p>Filozofowie nigdy nie rozmawiają ze sobą, co stwarza zagrożenie <strong>zakleszczenia</strong> w sytuacji, gdy każdy z nich zabierze lewy widelec i będzie czekał na prawy (lub na odwrót).</p>
-<h2 id="rozwizanie-z-hierarhi-zasobw--widelcw">Rozwiązanie z hierarhią zasobów / widelców</h2>
-<p>Jedym z rozwiązań tego problemu jest możliwe przez ustalenie hierarchii dla wielców, którymi posługują sie filozofowie. i wprowadzenie zasady, że kolejność dostępu do widelców jest ustalona przez ten porządek, a ich zwalnianie następuje w odwrotnej kolejności. Ponadto dwa widelce, które nie są ze sobą w relacje nie mogą zostać użyte przez jednego filozofa w tym samym czasie.</p>
-<h3 id="opis-rozwizania">Opis rozwiązania</h3>
-<p>Ustalmy zatem hierarchię i ponumerujmy widelce od 1 do 5:</p>
-<p><img src="https://mieszkomakuch.github.io/problemy-synchronizacyjne/img/forks.png" alt="forks_with_numbers" /></p>
-<p>Zgodnie z zasadami, aby użyć dwóch widelców filozof musi napierw podnieść widelec z niższym numerem. Sytuację te przedstawia poniższa grafika:</p>
-<p><img src="https://mieszkomakuch.github.io/problemy-synchronizacyjne/img/resource_hierarchy.png" alt="resource_hierarchy" /></p>
-<p>Zwróćmy uwagę, że zaznaczony na czerwono filozof <strong>nie może podnieść widelca 5!</strong> Jest to związane z przyjętą zasadą - najpierw pusiałby podnieśc witelec o niższym numerze.</p>
-<p>Oznacza to, że widelec 5 może sotać podniesiony przez sąsiadującego filozofa, przez co jest on teraz w stanie konsumować danie, co przedstawia poniższa grafika:</p>
-<p><img src="https://mieszkomakuch.github.io/problemy-synchronizacyjne/img/resource_hierarchy_result.png" alt="resource_hierarchy_result" /></p>
-<p>Jak widać, dzięki hierarchi zasobów udało się <strong>uniknąć zakleszczenia</strong>.</p>
-<h3 id="psedudokod-rozwizania">Psedudokod rozwiązania</h3>
-<pre><code class="language-cpp">var
-  widelce: tablica semaforów [0..4] := (1, 1, 1, 1, 1);
+<p>Rozwiązanie z kelnerem / arbitrem</p>
+<pre><code class="language-cpp">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;signal.h&gt;
+#include &lt;pthread.h&gt;
+#include &lt;memory.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;semaphore.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdint.h&gt;
+#include "error.h"
 
-process Filozof (i: 0..4);
-begin
-  repeat
-    Myśli;
-    Wait (widelce[i]);
-    Wait (widelce[(i+1) mod 5];
-    Je danie;
-    Post (widelce[i]);
-    Post (widelce[(i+1) mod 5];
-  until false
-end;
+#define NO_PHILOSOPHERS 5
+bool DEBUG;
+
+sem_t WAITER;
+sem_t CHOPSTICKS[NO_PHILOSOPHERS];
+
+int leftChopstick(int i) {
+    return i;
+}
+
+int rightChopstick(int i) {
+    return (i + 1) % 5;
+}
+
+void *philosopherJob(void *arg) {
+    int id = (int) (uintptr_t) arg;
+    while (1) {
+        usleep(500000);
+        // Check if waiter allows you to join the table
+        sem_wait(&amp;WAITER);
+        if(DEBUG) printf("  [D] Philosopher id: %i, TID=%ld joined the table\n", id, (long) pthread_self());
+        // Acquire chopsticks
+        sem_wait(&amp;CHOPSTICKS[rightChopstick(id)]);
+        sem_wait(&amp;CHOPSTICKS[leftChopstick(id)]);
+        if(DEBUG) printf("  [D] Philosopher id: %i, TID=%ld acquired chopsticks\n", id, (long) pthread_self());
+
+        // Eat
+        printf("Philosopher id: %i, TID=%ld is eating now\n", id, (long) pthread_self());
+        usleep(500000);
+
+        // Release chopsticks
+        sem_post(&amp;CHOPSTICKS[leftChopstick(id)]);
+        sem_post(&amp;CHOPSTICKS[rightChopstick(id)]);
+        if(DEBUG) printf("  [D] Philosopher id: %i, TID=%ld released chopsticks\n", id, (long) pthread_self());
+        sem_post(&amp;WAITER);
+        if(DEBUG) printf("  [D] Philosopher id: %i, TID=%ld left the table\n", id, (long) pthread_self());
+    }
+    return 0;
+}
+
+void parseArguments(int argc, char *argv[], int minNumberOfArguments,
+                    bool *debug) {
+    if (argc &lt; minNumberOfArguments + 1) {
+        throwError(
+                "Not enough arguments. Usage: ./main [-d]");
+    }
+    int currentArgument = 1;
+    if (argc == minNumberOfArguments + 2 &amp;&amp; strcmp(argv[currentArgument++], "-d") == 0) {
+        (*debug) = true;
+    }
+}
+
+int main(int argc, char *argv[]) {
+    parseArguments(argc, argv, 0, &amp;DEBUG);
+    printf("Dining-philosophers problem. Solution with waiter\n");
+    printf("    NO_PHILO=%i, DEBUG=%i\n\n", NO_PHILOSOPHERS, DEBUG);
+
+    // Initialize semaphores
+    if (sem_init(&amp;WAITER, 0, 4)) throwError("sem_init error"); // Waiter allows max 4 philosophers
+    for (int i = 0; i &lt; NO_PHILOSOPHERS; ++i) {
+        if (sem_init(&amp;CHOPSTICKS[i], 0, 1)) throwError("sem_init error");
+    }
+
+    // Initialize arrays of threads IDs
+    pthread_t *philosophersThreadsIds = malloc(NO_PHILOSOPHERS * sizeof(pthread_t));
+    if (philosophersThreadsIds == NULL) { cannotAllocateMemoryError(); }
+
+    // Create philosophers threads
+    for (int i = 0; i &lt; NO_PHILOSOPHERS; ++i) {
+        if (pthread_create(&amp;philosophersThreadsIds[i], NULL, philosopherJob, (void *) (uintptr_t) i) != 0) {
+            throwError("pthread_create error");
+        }
+    }
+
+    // Wait for philosophers to finish
+    for (int i = 0; i &lt; NO_PHILOSOPHERS; ++i) {
+        if (pthread_join(philosophersThreadsIds[i], NULL) != 0) {
+            throwError("pthread_join error");
+        }
+    }
+
+    free(philosophersThreadsIds);
+    sem_destroy(&amp;WAITER);
+    for (int i = 0; i &lt; NO_PHILOSOPHERS; ++i) {
+        sem_destroy(&amp;CHOPSTICKS[i]);
+    }
+
+    return 0;
+}
 </code></pre>
-<h3><a href="https://mieszkomakuch.github.io/problemy-synchronizacyjne/doc/dining-philosophers-resourceh-code.html">Pełne rozwiązanie z hierarchią zasobów</a></h3>
-<h2 id="rozwizanie-z-kelnerem--arbitrem">Rozwiązanie z kelnerem / arbitrem</h2>
-<h3 id="opis-rozwizania-1">Opis rozwiązania</h3>
-<h3 id="psedudokod-rozwizania-1">Psedudokod rozwiązania</h3>
-<pre><code class="language-cpp">var
-  kelner: semaphore := 4;
-  widelce: tablica semaforów [0..4] := (1, 1, 1, 1, 1);
-
-process Filozof (i: 0..4);
-begin
-  repeat
-    Myśli;
-    Wait (kelner);
-    Wait (widelce[i]);
-    Wait (widelce[(i+1) mod 5];
-    Je;
-    Post (widelce[i]);
-    Post (widelce[(i+1) mod 5];
-    Post (kelner)
-  until false
-end;</code></pre>
-<h3><a href="https://mieszkomakuch.github.io/problemy-synchronizacyjne/doc/dining-philosophers-waiter-code.html">Pełne rozwiązanie z kelnerem / arbitrem</a></h3>
         </section>
 
     </div>
