@@ -92,6 +92,30 @@
         <section class="col-sm-9 col-lg-10 content">
             <h1 id="problem-ucztujcych-filozofw">Problem ucztujących filozofów</h1>
 <p>Rozwiązanie z kelnerem / arbitrem</p>
+<h2 id="uycie">Użycie</h2>
+<p>Przejdź do folderu z kodem źródłowym, następnie:</p>
+<pre><code class="language-bash">make
+./dining-philosophers-waiter [-d]</code></pre>
+<p>Parametr <code>-d</code> - debug pozwala wypisywać szczegółowe informacje o przebiegu algorytmu.</p>
+<p>Przykładowy wynik, bez parametru <code>-d</code> (częściowy):</p>
+<pre><code class="language-bash">./dining-philosophers-waiter
+
+Dining-philosophers problem. Solution with waiter
+    NO_PHILO=5, DEBUG=0
+
+Philosopher id: 0, TID=139930960656128 is eating now
+Philosopher id: 1, TID=139930952263424 is eating now
+Philosopher id: 4, TID=139930927085312 is eating now
+Philosopher id: 2, TID=139930943870720 is eating now
+Philosopher id: 0, TID=139930960656128 is eating now
+Philosopher id: 3, TID=139930935478016 is eating now
+Philosopher id: 1, TID=139930952263424 is eating now
+Philosopher id: 2, TID=139930943870720 is eating now
+Philosopher id: 4, TID=139930927085312 is eating now
+Philosopher id: 0, TID=139930960656128 is eating now
+Philosopher id: 3, TID=139930935478016 is eating now
+</code></pre>
+<h2 id="kod-rdowy">Kod źródłowy</h2>
 <pre><code class="language-cpp">#include &lt;stdio.h&gt;
 #include &lt;stdlib.h&gt;
 #include &lt;signal.h&gt;

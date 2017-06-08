@@ -98,7 +98,12 @@
 ./dining-philosophers-resource-hierarchy [-d]</code></pre>
 <p>Parametr <code>-d</code> - debug pozwala wypisywać szczegółowe informacje o przebiegu algorytmu.</p>
 <p>Przykładowy wynik, bez parametru <code>-d</code> (częściowy):</p>
-<pre><code class="language-bash">Philosopher id: 0, TID=140467673151232 is eating now
+<pre><code class="language-bash">./dining-philosophers-resource-hierarchy 
+
+Dining-philosophers problem. Solution with resource hierarchy
+    NO_PHILO=5, DEBUG=0
+
+Philosopher id: 0, TID=140467673151232 is eating now
 Philosopher id: 2, TID=140467656365824 is eating now
 Philosopher id: 1, TID=140467664758528 is eating now
 Philosopher id: 3, TID=140467647973120 is eating now
@@ -111,9 +116,6 @@ Philosopher id: 2, TID=140467656365824 is eating now
 Philosopher id: 3, TID=140467647973120 is eating now
 Philosopher id: 1, TID=140467664758528 is eating now
 Philosopher id: 4, TID=140467639580416 is eating now
-Philosopher id: 2, TID=140467656365824 is eating now
-Philosopher id: 1, TID=140467664758528 is eating now
-Philosopher id: 3, TID=140467647973120 is eating now
 </code></pre>
 <h2 id="kod-rdowy">Kod źródłowy</h2>
 <pre><code class="language-cpp">#include &lt;stdio.h&gt;
