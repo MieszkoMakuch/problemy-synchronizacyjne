@@ -101,7 +101,7 @@
                                 </a>
                             </li>
                                                     <li class="">
-                                <a href="https://mieszkomakuch.github.io/problemy-synchronizacyjne/doc/producers-consumers-solution.html">
+                                <a href="https://mieszkomakuch.github.io/problemy-synchronizacyjne/doc/producers-consumers-source.html">
                                     Rozwiązanie dla wielu producetnów i konsumentów
                                 </a>
                             </li>
@@ -122,7 +122,7 @@
 
         
         <section class="col-sm-9 col-lg-10 content">
-            <h1 id="problem-czytelnikw-i-pisarzy">Problem czytelników i pisarzy</h1>
+            <h1 id="problem-producenta-i-konsumenta">Problem producenta i konsumenta</h1>
 <p>W problemie producenta i konsumenta występują dwa rodzaje procesów: producent i konsument, którzy dzielą wspólny zasób - bufor dla produkowanych (konsumowanych) jednostek. Zadaniem producenta jest wytworzenie produktu, umieszczenie go w buforze i rozpoczęcie pracy od nowa. W tym samym czasie konsument ma pobrać produkt z bufora. Problemem jest taka synchronizacja procesów, żeby producent nie dodawał nowych jednostek gdy bufor jest pełny, a konsument nie pobierał gdy bufor jest pusty.</p>
 <p><img src="https://mieszkomakuch.github.io/problemy-synchronizacyjne/img/producers-consumers.jpg" alt="woman-reader_2256250b" /></p>
 <h2 id="opis-rozwizania">Opis rozwiązania</h2>
@@ -169,7 +169,7 @@ konsument() {
     return 0
 }
 </code></pre>
-<h3><a href="https://mieszkomakuch.github.io/problemy-synchronizacyjne/doc/readers-writers-rwp1.html">Pełne rozwiązanie</a></h3>
+<h3><a href="https://mieszkomakuch.github.io/problemy-synchronizacyjne/doc/producers-consumers-source.html">Pełne rozwiązanie</a></h3>
         </section>
 
     </div>
