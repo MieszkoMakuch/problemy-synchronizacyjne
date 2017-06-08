@@ -122,16 +122,164 @@
 
         
         <section class="col-sm-9 col-lg-10 content">
-            <h1 id="problem-ucztujcych-filozofw">Problem ucztujących filozofów</h1>
-<p>Rozwiązanie z hierarchią zasobów</p>
+            <h1 id="problem-producentw-i-konsumentw">Problem producentów i konsumentów</h1>
 <h2 id="uycie">Użycie</h2>
 <p>Przejdź do folderu z kodem źródłowym, następnie:</p>
-<pre><code class="language-bash">make</code></pre>
+<pre><code class="language-bash">make
+./producers-consumers NO_PRODUCERS NO_CONSUMERS [-d]</code></pre>
 <p>Parametr <code>-d</code> - debug pozwala wypisywać szczegółowe informacje o przebiegu algorytmu.</p>
-<p>Przykładowy wynik, bez parametru <code>-d</code> (częściowy):</p>
-<pre><code class="language-bash"></code></pre>
 <h2 id="kod-rdowy">Kod źródłowy</h2>
-<pre><code class="language-cpp"></code></pre>
+<pre><code class="language-cpp">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;signal.h&gt;
+#include &lt;pthread.h&gt;
+#include &lt;memory.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;semaphore.h&gt;
+#include &lt;unistd.h&gt;
+#include "error.h"
+
+#define RANGE 100 // Range of produced items (integers)
+#define BUFFER_SIZE 50
+int BUFFER[BUFFER_SIZE];
+
+int NO_PRODUCERS;
+int NO_CONSUMERS;
+bool DEBUG;
+
+pthread_mutex_t bufferMutex = PTHREAD_MUTEX_INITIALIZER;
+sem_t filledSpaceSemaphore;
+sem_t leftSpaceSemaphore;
+
+int semaphoreGetVal(sem_t *sem){
+    int sval;
+    sem_getvalue(sem, &amp;sval);
+    return sval;
+}
+
+void putItem(int item){
+    int index = semaphoreGetVal(&amp;filledSpaceSemaphore);
+    if(index &gt; BUFFER_SIZE){throwError("putItem error filledSpaceSemaphore &gt; BUFFER_SIZE");}
+    BUFFER[index] = item;
+    printf("Producer TID=%ld put item=%i to index=%i.\n", (long) pthread_self(), item, index);
+}
+
+void *producerJob(void *arg) {
+    while (1) {
+        // Produce item
+        int item = rand() % RANGE;
+
+        if(DEBUG){
+            printf("Producer TID=%ld is trying to decrement leftSpaceSemaphore=%i.\n",
+                   (long) pthread_self(), semaphoreGetVal(&amp;leftSpaceSemaphore));
+        }
+        sem_wait(&amp;leftSpaceSemaphore);
+        pthread_mutex_lock(&amp;bufferMutex);
+
+        // Put item into buffer
+        putItem(item);
+
+        pthread_mutex_unlock(&amp;bufferMutex);
+        sem_post(&amp;filledSpaceSemaphore);
+    }
+    return 0;
+}
+
+int removeItem(){
+    int indexToRemove = semaphoreGetVal(&amp;filledSpaceSemaphore);
+    if(indexToRemove &lt; 0){throwError("removeItem error filledSpaceSemaphore &lt; 0");}
+    int item = BUFFER[indexToRemove];
+    printf("Consumer TID=%ld removed item=%i from index=%i.\n", (long) pthread_self(), item, indexToRemove);
+    return item;
+}
+
+void *consumerJob(void *arg) {
+    while (1) {
+        if(DEBUG){
+            printf("Consumer TID=%ld is trying to decrement filledSpaceSemaphore=%i.\n",
+                   (long) pthread_self(), semaphoreGetVal(&amp;filledSpaceSemaphore));
+        }
+        sem_wait(&amp;filledSpaceSemaphore);
+        pthread_mutex_lock(&amp;bufferMutex);
+
+        // Remove item from buffer
+        int item = removeItem();
+
+        pthread_mutex_unlock(&amp;bufferMutex);
+        sem_post(&amp;leftSpaceSemaphore);
+
+        // Consume item
+        item += item;
+    }
+    return 0;
+}
+
+void parseArguments(int argc, char *argv[], int minNumberOfArguments,
+                    int *noProducers, int *noConsumers, bool *debug) {
+    if (argc &lt; minNumberOfArguments + 1) {
+        throwError(
+                "Not enough arguments. Usage: ./main NO_PRODUCERS NO_CONSUMERS [-d]");
+    }
+    int currentArgument = 1;
+    (*noProducers) = atoi(argv[currentArgument++]);
+    (*noConsumers) = atoi(argv[currentArgument++]);
+    if (argc == minNumberOfArguments + 2 &amp;&amp; strcmp(argv[currentArgument++], "-d") == 0) {
+        (*debug) = true;
+    }
+}
+
+int main(int argc, char *argv[]) {
+    parseArguments(argc, argv, 2, &amp;NO_PRODUCERS, &amp;NO_CONSUMERS, &amp;DEBUG);
+    printf("Producers-consumers problem.\n");
+    printf("    NO_PRODUCERS=%i, NO_CONSUMERS=%i, DEBUG=%i\n\n",
+           NO_PRODUCERS, NO_CONSUMERS, DEBUG);
+
+    // Initialize semaphores
+    if (sem_init(&amp;filledSpaceSemaphore, 0, 0)) throwError("sem_init error");
+    if (sem_init(&amp;leftSpaceSemaphore, 0, BUFFER_SIZE)) throwError("sem_init error");
+
+    // Initialize arrays of threads IDs
+    pthread_t *producersThreadsIds = malloc(NO_PRODUCERS * sizeof(pthread_t));
+    if (producersThreadsIds == NULL) { cannotAllocateMemoryError(); }
+    pthread_t *consumersThreadsIds = malloc(NO_PRODUCERS * sizeof(pthread_t));
+    if (consumersThreadsIds == NULL) { cannotAllocateMemoryError(); }
+
+    // Create producers threads
+    for (int i = 0; i &lt; NO_PRODUCERS; ++i) {
+        if (pthread_create(&amp;producersThreadsIds[i], NULL, producerJob, NULL) != 0) {
+            throwError("pthread_create error");
+        }
+    }
+    // Create consumers threads
+    for (int i = 0; i &lt; NO_CONSUMERS; ++i) {
+        if (pthread_create(&amp;consumersThreadsIds[i], NULL, consumerJob, NULL) != 0) {
+            throwError("pthread_create error");
+        }
+    }
+
+    // Wait for producers to finish
+    for (int i = 0; i &lt; NO_PRODUCERS; ++i) {
+        if (pthread_join(producersThreadsIds[i], NULL) != 0) {
+            throwError("pthread_join error");
+        }
+    }
+    // Wait for consumers to finish
+    for (int i = 0; i &lt; NO_CONSUMERS; ++i) {
+        if (pthread_join(consumersThreadsIds[i], NULL) != 0) {
+            throwError("pthread_join error");
+        }
+    }
+
+    free(producersThreadsIds);
+    free(consumersThreadsIds);
+    pthread_mutex_destroy(&amp;bufferMutex);
+    sem_destroy(&amp;filledSpaceSemaphore);
+    sem_destroy(&amp;leftSpaceSemaphore);
+
+    return 0;
+}
+</code></pre>
         </section>
 
     </div>
