@@ -128,7 +128,7 @@
         
         <section class="col-sm-9 col-lg-10 content">
             <h1 id="problem-czytelnikw-i-pisarzy---rozwizanie">Problem czytelników i pisarzy - rozwiązanie</h1>
-<p><strong>Wariant faworyzujący czytelników</strong>:</p>
+<p><strong>Wariant bez zagłodzenia</strong>:</p>
 <ul>
 <li>wykorzystując do synchronizacji semafory</li>
 <li>wykorzystując do synchronizacji muteks</li>
@@ -137,7 +137,7 @@
 <h3 id="uycie">Użycie</h3>
 <p>Przejdź do folderu z kodem źródłowym, następnie:</p>
 <pre><code class="language-bash">make
-./rwp1_semaphore NO_READERS NO_WRITERS [-i]</code></pre>
+./rwp3_semaphore NO_READERS NO_WRITERS [-i]</code></pre>
 <p>Parametr <code>-i</code> pozwala wypisywać szczegółowe informacje o przebiegu algorytmu.</p>
 <h3 id="kod-rdowy">Kod źródłowy</h3>
 <pre><code class="language-cpp">#include &lt;stdio.h&gt;
@@ -146,32 +146,35 @@
 #include &lt;pthread.h&gt;
 #include &lt;memory.h&gt;
 #include &lt;stdbool.h&gt;
-#include &lt;semaphore.h&gt;
 #include &lt;stdint.h&gt;
+#include &lt;semaphore.h&gt;
 #include "error.h"
 #include "common.h"
 
 int NO_READERS;
 int NO_WRITERS;
 int NO_READERS_READING = 0;     // How many readers need shared resources
+int NO_WRITERS_WRITING = 0;     // How many writers need shared resources
 bool VERBOSE;
 
-sem_t resourceSemaphore, readerSemaphore;
+sem_t resourceSemaphore, readerSemaphore, serviceSemaphore;
 
 void *readerJob(void *arg) {
     while (1) {
+        sem_wait(&amp;serviceSemaphore);
         sem_wait(&amp;readerSemaphore);
-        NO_READERS_READING++; // Indicate that you are needing the shared resource (one more reader)
+        NO_READERS_READING++;
         if (NO_READERS_READING == 1) {
             sem_wait(&amp;resourceSemaphore);
         }
+        sem_post(&amp;serviceSemaphore);
         sem_post(&amp;readerSemaphore);
 
         readMemory((int) (uintptr_t) arg, SHARED_ARRAY, SHARED_ARRAY_SIZE, RANGE, VERBOSE);
 
         sem_wait(&amp;readerSemaphore);
         NO_READERS_READING--;
-        if (NO_READERS_READING == 0) { // Check if you are the last reader
+        if (NO_READERS_READING == 0) {
             sem_post(&amp;resourceSemaphore);
         }
         sem_post(&amp;readerSemaphore);
@@ -181,8 +184,12 @@ void *readerJob(void *arg) {
 
 void *writerJob(void *arg) {
     while (1) {
+        sem_wait(&amp;serviceSemaphore); // Wait in line to be serviced
         sem_wait(&amp;resourceSemaphore);
+        sem_post(&amp;serviceSemaphore); // Allow next in line to be serviced
+
         writeMemory(SHARED_ARRAY, SHARED_ARRAY_SIZE, RANGE, VERBOSE);
+
         sem_post(&amp;resourceSemaphore);
     }
     return 0;
@@ -190,13 +197,14 @@ void *writerJob(void *arg) {
 
 int main(int argc, char *argv[]) {
     parseArguments(argc, argv, 2, &amp;NO_READERS, &amp;NO_WRITERS, &amp;VERBOSE);
-    printf("Readers–writers problem: readers-preference (writers may starve) with semaphore synchronization.\n");
+    printf("Readers–writers problem: third readers-writers problem (no thread shall be allowed to starve) with semaphore synchronization.\n");
     printf("    NO_READERS=%i, NO_WRITERS=%i, VERBOSE=%i\n\n",
            NO_READERS, NO_WRITERS, VERBOSE);
 
     // Initialize semaphores
-    if (sem_init(&amp;readerSemaphore, 0, 1)) throwError("sem_init error");
     if (sem_init(&amp;resourceSemaphore, 0, 1)) throwError("sem_init error");
+    if (sem_init(&amp;serviceSemaphore, 0, 1)) throwError("sem_init error");
+    if (sem_init(&amp;readerSemaphore, 0, 1)) throwError("sem_init error");
 
     // Initialize arrays of threads IDs
     pthread_t *readersThreadsIds = malloc(NO_READERS * sizeof(pthread_t));
@@ -237,8 +245,8 @@ int main(int argc, char *argv[]) {
     free(readersThreadsIds);
     free(writersThreadsIds);
     sem_destroy(&amp;resourceSemaphore);
+    sem_destroy(&amp;serviceSemaphore);
     sem_destroy(&amp;readerSemaphore);
-
     return 0;
 }
 </code></pre>
@@ -246,7 +254,7 @@ int main(int argc, char *argv[]) {
 <h3 id="uycie-1">Użycie</h3>
 <p>Przejdź do folderu z kodem źródłowym, następnie:</p>
 <pre><code class="language-bash">make
-./rwp1_mutex NO_READERS NO_WRITERS [-i]</code></pre>
+./rwp3_mutex NO_READERS NO_WRITERS [-i]</code></pre>
 <p>Parametr <code>-i</code> pozwala wypisywać szczegółowe informacje o przebiegu algorytmu.</p>
 <h3 id="kod-rdowy-1">Kod źródłowy</h3>
 <pre><code class="language-cpp">#include &lt;stdio.h&gt;
@@ -262,25 +270,29 @@ int main(int argc, char *argv[]) {
 int NO_READERS;
 int NO_WRITERS;
 int NO_READERS_READING = 0;     // How many readers need shared resources
+int NO_WRITERS_WRITING = 0;     // How many writers need shared resources
 bool VERBOSE;
 
 pthread_mutex_t resourceMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t readerMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t serviceMutex = PTHREAD_MUTEX_INITIALIZER;
 
 void *readerJob(void *arg) {
     while (1) {
+        pthread_mutex_lock(&amp;serviceMutex);
         pthread_mutex_lock(&amp;readerMutex);
-        NO_READERS_READING++; // Indicate that you are needing the shared resource (one more reader)
+        NO_READERS_READING++;
         if (NO_READERS_READING == 1) {
             pthread_mutex_lock(&amp;resourceMutex);
         }
+        pthread_mutex_unlock(&amp;serviceMutex);
         pthread_mutex_unlock(&amp;readerMutex);
 
         readMemory((int) (uintptr_t) arg, SHARED_ARRAY, SHARED_ARRAY_SIZE, RANGE, VERBOSE);
 
         pthread_mutex_lock(&amp;readerMutex);
         NO_READERS_READING--;
-        if (NO_READERS_READING == 0) { // Check if you are the last reader
+        if (NO_READERS_READING == 0) {
             pthread_mutex_unlock(&amp;resourceMutex);
         }
         pthread_mutex_unlock(&amp;readerMutex);
@@ -290,8 +302,12 @@ void *readerJob(void *arg) {
 
 void *writerJob(void *arg) {
     while (1) {
+        pthread_mutex_lock(&amp;serviceMutex); // Wait in line to be serviced
         pthread_mutex_lock(&amp;resourceMutex);
+        pthread_mutex_unlock(&amp;serviceMutex); // Allow next in line to be serviced
+
         writeMemory(SHARED_ARRAY, SHARED_ARRAY_SIZE, RANGE, VERBOSE);
+
         pthread_mutex_unlock(&amp;resourceMutex);
     }
     return 0;
@@ -299,7 +315,7 @@ void *writerJob(void *arg) {
 
 int main(int argc, char *argv[]) {
     parseArguments(argc, argv, 2, &amp;NO_READERS, &amp;NO_WRITERS, &amp;VERBOSE);
-    printf("Readers–writers problem: readers-preference (writers may starve) with mutex synchronization.\n");
+    printf("Readers–writers problem: third readers-writers problem (no thread shall be allowed to starve) with Mutex synchronization.\n");
     printf("    NO_READERS=%i, NO_WRITERS=%i, VERBOSE=%i\n\n",
            NO_READERS, NO_WRITERS, VERBOSE);
 
@@ -343,7 +359,7 @@ int main(int argc, char *argv[]) {
     free(writersThreadsIds);
     pthread_mutex_destroy(&amp;resourceMutex);
     pthread_mutex_destroy(&amp;readerMutex);
-
+    pthread_mutex_destroy(&amp;serviceMutex);
     return 0;
 }
 </code></pre>
