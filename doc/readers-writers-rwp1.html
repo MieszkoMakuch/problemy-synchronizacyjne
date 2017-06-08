@@ -127,34 +127,19 @@
 
         
         <section class="col-sm-9 col-lg-10 content">
-            <h1 id="problem-ucztujcych-filozofw">Problem ucztujących filozofów</h1>
-<p>Rozwiązanie z hierarchią zasobów</p>
-<h2 id="uycie">Użycie</h2>
+            <h1 id="problem-czytelnikw-i-pisarzy---rozwizanie">Problem czytelników i pisarzy - rozwiązanie</h1>
+<p>Wariant faworyzujący czytelników:</p>
+<ul>
+<li>wykorzystując do synchronizacji semafory</li>
+<li>wykorzystując do synchronizacji muteks</li>
+</ul>
+<h2 id="wykorzystujc-do-synchronizacji-semafory">Wykorzystując do synchronizacji semafory</h2>
+<h3 id="uycie">Użycie</h3>
 <p>Przejdź do folderu z kodem źródłowym, następnie:</p>
 <pre><code class="language-bash">make
-./dining-philosophers-resource-hierarchy [-d]</code></pre>
-<p>Parametr <code>-d</code> - debug pozwala wypisywać szczegółowe informacje o przebiegu algorytmu.</p>
-<p>Przykładowy wynik, bez parametru <code>-d</code> (częściowy):</p>
-<pre><code class="language-bash">./dining-philosophers-resource-hierarchy 
-
-Dining-philosophers problem. Solution with resource hierarchy
-    NO_PHILO=5, DEBUG=0
-
-Philosopher id: 0, TID=140467673151232 is eating now
-Philosopher id: 2, TID=140467656365824 is eating now
-Philosopher id: 1, TID=140467664758528 is eating now
-Philosopher id: 3, TID=140467647973120 is eating now
-Philosopher id: 2, TID=140467656365824 is eating now
-Philosopher id: 4, TID=140467639580416 is eating now
-Philosopher id: 1, TID=140467664758528 is eating now
-Philosopher id: 3, TID=140467647973120 is eating now
-Philosopher id: 0, TID=140467673151232 is eating now
-Philosopher id: 2, TID=140467656365824 is eating now
-Philosopher id: 3, TID=140467647973120 is eating now
-Philosopher id: 1, TID=140467664758528 is eating now
-Philosopher id: 4, TID=140467639580416 is eating now
-</code></pre>
-<h2 id="kod-rdowy">Kod źródłowy</h2>
+./rwp1_semaphore NO_READERS NO_WRITERS [-i]</code></pre>
+<p>Parametr <code>-i</code> pozwala wypisywać szczegółowe informacje o przebiegu algorytmu.</p>
+<h3 id="kod-rdowy">Kod źródłowy</h3>
 <pre><code class="language-cpp">#include &lt;stdio.h&gt;
 #include &lt;stdlib.h&gt;
 #include &lt;signal.h&gt;
@@ -162,114 +147,202 @@ Philosopher id: 4, TID=140467639580416 is eating now
 #include &lt;memory.h&gt;
 #include &lt;stdbool.h&gt;
 #include &lt;semaphore.h&gt;
-#include &lt;unistd.h&gt;
 #include &lt;stdint.h&gt;
 #include "error.h"
+#include "common.h"
 
-#define NO_PHILOSOPHERS 5
-bool DEBUG;
+int NO_READERS;
+int NO_WRITERS;
+int NO_READERS_READING = 0;     // How many readers need shared resources
+bool VERBOSE;
 
-sem_t CHOPSTICKS[NO_PHILOSOPHERS];
+sem_t resourceSemaphore, readerSemaphore;
 
-int leftChopstick(int i) {
-    return i;
-}
-
-int rightChopstick(int i) {
-    return (i + 1) % 5;
-}
-
-void *philosopherJob(void *arg) {
-    int id = (int) (uintptr_t) arg;
+void *readerJob(void *arg) {
     while (1) {
-        usleep(500000);
-        // Acquire chopstick following the resource hierarchy
-        if (leftChopstick(id) &lt; rightChopstick(id)) {
-            if (DEBUG)
-                printf("  [D] Philosopher id: %i, TID=%ld is acquiring left chopstick\n", id, (long) pthread_self());
-            sem_wait(&amp;CHOPSTICKS[leftChopstick(id)]);
-            if (DEBUG)
-                printf("  [D] Philosopher id: %i, TID=%ld is acquiring right chopstick\n", id, (long) pthread_self());
-            sem_wait(&amp;CHOPSTICKS[rightChopstick(id)]);
-        } else {
-            if (DEBUG)
-                printf("  [D] Philosopher id: %i, TID=%ld is acquiring right chopstick\n", id, (long) pthread_self());
-            sem_wait(&amp;CHOPSTICKS[rightChopstick(id)]);
-            if (DEBUG)
-                printf("  [D] Philosopher id: %i, TID=%ld is acquiring left chopstick\n", id, (long) pthread_self());
-            sem_wait(&amp;CHOPSTICKS[leftChopstick(id)]);
+        sem_wait(&amp;readerSemaphore);
+        NO_READERS_READING++; // Indicate that you are needing the shared resource (one more reader)
+        if (NO_READERS_READING == 1) {
+            sem_wait(&amp;resourceSemaphore);
         }
-        if (DEBUG) printf("  [D] Philosopher id: %i, TID=%ld acquired both chopsticks\n", id, (long) pthread_self());
+        sem_post(&amp;readerSemaphore);
 
-        // Eat
-        printf("Philosopher id: %i, TID=%ld is eating now\n", id, (long) pthread_self());
-        usleep(500000);
+        readMemory((int) (uintptr_t) arg, SHARED_ARRAY, SHARED_ARRAY_SIZE, RANGE, VERBOSE);
 
-        // Release chopsticks following the resource hierarchy
-        if (leftChopstick(id) &lt; rightChopstick(id)) {
-            if (DEBUG)
-                printf("  [D] Philosopher id: %i, TID=%ld is releasing right chopstick\n", id, (long) pthread_self());
-            sem_post(&amp;CHOPSTICKS[rightChopstick(id)]);
-            if (DEBUG)
-                printf("  [D] Philosopher id: %i, TID=%ld is acquiring left chopstick\n", id, (long) pthread_self());
-            sem_post(&amp;CHOPSTICKS[leftChopstick(id)]);
-        } else {
-            if (DEBUG)
-                printf("  [D] Philosopher id: %i, TID=%ld is acquiring left chopstick\n", id, (long) pthread_self());
-            sem_post(&amp;CHOPSTICKS[leftChopstick(id)]);
-            if (DEBUG)
-                printf("  [D] Philosopher id: %i, TID=%ld is releasing right chopstick\n", id, (long) pthread_self());
-            sem_post(&amp;CHOPSTICKS[rightChopstick(id)]);
+        sem_wait(&amp;readerSemaphore);
+        NO_READERS_READING--;
+        if (NO_READERS_READING == 0) { // Check if you are the last reader
+            sem_post(&amp;resourceSemaphore);
         }
-        if (DEBUG) printf("  [D] Philosopher id: %i, TID=%ld released both chopsticks\n", id, (long) pthread_self());
+        sem_post(&amp;readerSemaphore);
     }
     return 0;
 }
 
-void parseArguments(int argc, char *argv[], int minNumberOfArguments,
-                    bool *debug) {
-    if (argc &lt; minNumberOfArguments + 1) {
-        throwError(
-                "Not enough arguments. Usage: ./main [-d]");
+void *writerJob(void *arg) {
+    while (1) {
+        sem_wait(&amp;resourceSemaphore);
+        writeMemory(SHARED_ARRAY, SHARED_ARRAY_SIZE, RANGE, VERBOSE);
+        sem_post(&amp;resourceSemaphore);
     }
-    int currentArgument = 1;
-    if (argc == minNumberOfArguments + 2 &amp;&amp; strcmp(argv[currentArgument++], "-d") == 0) {
-        (*debug) = true;
-    }
+    return 0;
 }
 
 int main(int argc, char *argv[]) {
-    parseArguments(argc, argv, 0, &amp;DEBUG);
-    printf("Dining-philosophers problem. Solution with resource hierarchy\n");
-    printf("    NO_PHILO=%i, DEBUG=%i\n\n", NO_PHILOSOPHERS, DEBUG);
+    parseArguments(argc, argv, 2, &amp;NO_READERS, &amp;NO_WRITERS, &amp;VERBOSE);
+    printf("Readers–writers problem: readers-preference (writers may starve) with semaphore synchronization.\n");
+    printf("    NO_READERS=%i, NO_WRITERS=%i, VERBOSE=%i\n\n",
+           NO_READERS, NO_WRITERS, VERBOSE);
 
     // Initialize semaphores
-    for (int i = 0; i &lt; NO_PHILOSOPHERS; ++i) {
-        if (sem_init(&amp;CHOPSTICKS[i], 0, 1)) throwError("sem_init error");
-    }
+    if (sem_init(&amp;readerSemaphore, 0, 1)) throwError("sem_init error");
+    if (sem_init(&amp;resourceSemaphore, 0, 1)) throwError("sem_init error");
 
     // Initialize arrays of threads IDs
-    pthread_t *philosophersThreadsIds = malloc(NO_PHILOSOPHERS * sizeof(pthread_t));
-    if (philosophersThreadsIds == NULL) { cannotAllocateMemoryError(); }
+    pthread_t *readersThreadsIds = malloc(NO_READERS * sizeof(pthread_t));
+    if (readersThreadsIds == NULL) { cannotAllocateMemoryError(); }
+    pthread_t *writersThreadsIds = malloc(NO_READERS * sizeof(pthread_t));
+    if (writersThreadsIds == NULL) { cannotAllocateMemoryError(); }
 
-    // Create philosophers threads
-    for (int i = 0; i &lt; NO_PHILOSOPHERS; ++i) {
-        if (pthread_create(&amp;philosophersThreadsIds[i], NULL, philosopherJob, (void *) (uintptr_t) i) != 0) {
+    // Initialize shared memory (array) with random numbers
+    srand(time(NULL));
+    initSharedArray();
+
+    // Create readers threads
+    for (int i = 0; i &lt; NO_READERS; ++i) {
+        if (pthread_create(&amp;readersThreadsIds[i], NULL, readerJob, (void *) (uintptr_t) i) != 0) {
+            throwError("pthread_create error");
+        }
+    }
+    // Create writers threads
+    for (int i = 0; i &lt; NO_WRITERS; ++i) {
+        if (pthread_create(&amp;writersThreadsIds[i], NULL, writerJob, NULL) != 0) {
             throwError("pthread_create error");
         }
     }
 
-    // Wait for philosophers to finish
-    for (int i = 0; i &lt; NO_PHILOSOPHERS; ++i) {
-        if (pthread_join(philosophersThreadsIds[i], NULL) != 0) {
+    // Wait for readers to finish
+    for (int i = 0; i &lt; NO_READERS; ++i) {
+        if (pthread_join(readersThreadsIds[i], NULL) != 0) {
+            throwError("pthread_join error");
+        }
+    }
+    // Wait for writers to finish
+    for (int i = 0; i &lt; NO_WRITERS; ++i) {
+        if (pthread_join(writersThreadsIds[i], NULL) != 0) {
             throwError("pthread_join error");
         }
     }
 
-    free(philosophersThreadsIds);
-    for (int i = 0; i &lt; NO_PHILOSOPHERS; ++i) {
-        sem_destroy(&amp;CHOPSTICKS[i]);
+    free(readersThreadsIds);
+    free(writersThreadsIds);
+    sem_destroy(&amp;resourceSemaphore);
+    sem_destroy(&amp;readerSemaphore);
+
+    return 0;
+}
+</code></pre>
+<h2 id="wykorzystujc-do-synchronizacji-mutex">Wykorzystując do synchronizacji mutex</h2>
+<h3 id="uycie-1">Użycie</h3>
+<p>Przejdź do folderu z kodem źródłowym, następnie:</p>
+<pre><code class="language-bash">make
+./rwp1_mutex NO_READERS NO_WRITERS [-i]</code></pre>
+<p>Parametr <code>-i</code> pozwala wypisywać szczegółowe informacje o przebiegu algorytmu.</p>
+<h3 id="kod-rdowy-1">Kod źródłowy</h3>
+<pre><code class="language-cpp">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;signal.h&gt;
+#include &lt;pthread.h&gt;
+#include &lt;memory.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;stdint.h&gt;
+#include "error.h"
+#include "common.h"
+
+int NO_READERS;
+int NO_WRITERS;
+int NO_READERS_READING = 0;     // How many readers need shared resources
+bool VERBOSE;
+
+pthread_mutex_t resourceMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t readerMutex = PTHREAD_MUTEX_INITIALIZER;
+
+void *readerJob(void *arg) {
+    while (1) {
+        pthread_mutex_lock(&amp;readerMutex);
+        NO_READERS_READING++; // Indicate that you are needing the shared resource (one more reader)
+        if (NO_READERS_READING == 1) {
+            pthread_mutex_lock(&amp;resourceMutex);
+        }
+        pthread_mutex_unlock(&amp;readerMutex);
+
+        readMemory((int) (uintptr_t) arg, SHARED_ARRAY, SHARED_ARRAY_SIZE, RANGE, VERBOSE);
+
+        pthread_mutex_lock(&amp;readerMutex);
+        NO_READERS_READING--;
+        if (NO_READERS_READING == 0) { // Check if you are the last reader
+            pthread_mutex_unlock(&amp;resourceMutex);
+        }
+        pthread_mutex_unlock(&amp;readerMutex);
     }
+    return 0;
+}
+
+void *writerJob(void *arg) {
+    while (1) {
+        pthread_mutex_lock(&amp;resourceMutex);
+        writeMemory(SHARED_ARRAY, SHARED_ARRAY_SIZE, RANGE, VERBOSE);
+        pthread_mutex_unlock(&amp;resourceMutex);
+    }
+    return 0;
+}
+
+int main(int argc, char *argv[]) {
+    parseArguments(argc, argv, 2, &amp;NO_READERS, &amp;NO_WRITERS, &amp;VERBOSE);
+    printf("Readers–writers problem: readers-preference (writers may starve) with mutex synchronization.\n");
+    printf("    NO_READERS=%i, NO_WRITERS=%i, VERBOSE=%i\n\n",
+           NO_READERS, NO_WRITERS, VERBOSE);
+
+    // Initialize arrays of threads IDs
+    pthread_t *readersThreadsIds = malloc(NO_READERS * sizeof(pthread_t));
+    if (readersThreadsIds == NULL) { cannotAllocateMemoryError(); }
+    pthread_t *writersThreadsIds = malloc(NO_READERS * sizeof(pthread_t));
+    if (writersThreadsIds == NULL) { cannotAllocateMemoryError(); }
+
+    // Initialize shared memory (array) with random numbers
+    srand(time(NULL));
+    initSharedArray();
+
+    // Create readers threads
+    for (int i = 0; i &lt; NO_READERS; ++i) {
+        if (pthread_create(&amp;readersThreadsIds[i], NULL, readerJob, (void *) (uintptr_t) i) != 0) {
+            throwError("pthread_create error");
+        }
+    }
+    // Create writers threads
+    for (int i = 0; i &lt; NO_WRITERS; ++i) {
+        if (pthread_create(&amp;writersThreadsIds[i], NULL, writerJob, NULL) != 0) {
+            throwError("pthread_create error");
+        }
+    }
+
+    // Wait for readers to finish
+    for (int i = 0; i &lt; NO_READERS; ++i) {
+        if (pthread_join(readersThreadsIds[i], NULL) != 0) {
+            throwError("pthread_join error");
+        }
+    }
+    // Wait for writers to finish
+    for (int i = 0; i &lt; NO_WRITERS; ++i) {
+        if (pthread_join(writersThreadsIds[i], NULL) != 0) {
+            throwError("pthread_join error");
+        }
+    }
+
+    free(readersThreadsIds);
+    free(writersThreadsIds);
+    pthread_mutex_destroy(&amp;resourceMutex);
+    pthread_mutex_destroy(&amp;readerMutex);
 
     return 0;
 }
