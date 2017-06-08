@@ -90,11 +90,16 @@
 <p>Brak dostępnych widelców jest analogią braku dostępu do współdzielonych zasobów w rzeczywistym programowaniu komputerów, w sytuacji zwanej współbieżnością. Blokowanie zasobów jest powszechną techniką zapewniania wyłącznego dostępu do zasobu przez jeden program lub moduł kodu. Gdy zasób zostaje zajęty przez program, każdy następny „zainteresowany” nim program jest blokowany do czasu zwolnienia zasobu. Zależnie od okoliczności, jeśli kilka programów bierze udział w blokowaniu zasobu, możliwe jest zakleszczenie.</p>
 <h2 id="rozwizanie-z-hierarhi-zasobw--widelcw">Rozwiązanie z hierarhią zasobów / widelców</h2>
 <p>Jedym z rozwiązań tego problemu jest możliwe przez ustalenie hierarchii dla wielców, którymi posługują sie filozofowie. i wprowadzenie zasady, że kolejność dostępu do widelców jest ustalona przez ten porządek, a ich zwalnianie następuje w odwrotnej kolejności. Ponadto dwa widelce, które nie są ze sobą w relacje nie mogą zostać użyte przez jednego filozofa w tym samym czasie.</p>
+<h3 id="opis-rozwizania">Opis rozwiązania</h3>
 <p>Ustalmy zatem hierarchię i ponumerujmy widelce od 1 do 5:</p>
 <p><img src="https://mieszkomakuch.github.io/problemy-synchronizacyjne/img/forks.png" alt="forks_with_numbers" /></p>
 <p>Zgodnie z zasadami, aby użyć dwóch widelców filozof musi napierw podnieść widelec z niższym numerem. Sytuację te przedstawia poniższa grafika:</p>
 <p><img src="https://mieszkomakuch.github.io/problemy-synchronizacyjne/img/resource_hierarchy.png" alt="resource_hierarchy" /></p>
-<p>Zwróćmy uwagę, że zaznaczony na czerwono filozof <strong>nie może podnieść widelca 5!</strong> </p>
+<p>Zwróćmy uwagę, że zaznaczony na czerwono filozof <strong>nie może podnieść widelca 5!</strong> Jest to związane z przyjętą zasadą - najpierw pusiałby podnieśc witelec o niższym numerze.</p>
+<p>Oznacza to, że widelec 5 może sotać podniesiony przez sąsiadującego filozofa, przez co jest on teraz w stanie konsumować danie, co przedstawia poniższa grafika:</p>
+<p><img src="https://mieszkomakuch.github.io/problemy-synchronizacyjne/img/resource_hierarchy_result.png" alt="resource_hierarchy_result" /></p>
+<p>Jak widać, dzięki hierarchi zasobów udało się <strong>uniknąć zakleszczenia</strong>.</p>
+<h3 id="psedudokod-rozwizania">Psedudokod rozwiązania</h3>
         </section>
 
     </div>
