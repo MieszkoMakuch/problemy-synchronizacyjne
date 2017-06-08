@@ -1,3 +1,5 @@
+# [Dokumentacja online](https://mieszkomakuch.github.io/problemy-synchronizacyjne/)
+
 # Wprowadzenie
 Problem synchronizacji procesów pojawia się wszędzie tam, gdzie mamy do czynienia ze współpracującymi ze sobą współbieżnymi procesami. Oto najczęściej spotykane przyczyny, dla których konieczna jest synchronizacja współpracujących procesów:
 - Procesy współdzielą pewną strukturę danych
