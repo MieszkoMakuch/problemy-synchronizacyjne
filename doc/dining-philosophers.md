@@ -17,7 +17,7 @@ Filozofowie nigdy nie rozmawiają ze sobą, co stwarza zagrożenie **zakleszczen
 
 ## Rozwiązanie z hierarchią zasobów / widelców
 
-Jednym z rozwiązań tego problemu jest możliwe przez ustalenie hierarchii dla widelców, którymi posługują się filozofowie. i wprowadzenie zasady, że kolejność dostępu do widelców jest ustalona przez ten porządek, a ich zwalnianie następuje w odwrotnej kolejności. Ponadto dwa widelce, które nie są ze sobą w relacje nie mogą zostać użyte przez jednego filozofa w tym samym czasie.
+Jednym z rozwiązań tego problemu jest możliwe przez ustalenie hierarchii dla widelców, którymi posługują się filozofowie i wprowadzenie zasady, że kolejność dostępu do widelców jest ustalona przez ten porządek, a ich zwalnianie następuje w odwrotnej kolejności. Ponadto dwa widelce, które nie są ze sobą w relacje nie mogą zostać użyte przez jednego filozofa w tym samym czasie.
 
 ### Opis rozwiązania
 
