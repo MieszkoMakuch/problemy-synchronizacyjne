@@ -14,19 +14,33 @@ footerText: Przygotował Mieszko Makuch.
 # The left menu bar
 menu:
     sections:
-        main:
+        dining-philosophers:
             name: Problem ucztujących filozofów
             items:
                 dining-philosophers-main:
                     text: Opis problemu
                     relativeUrl: doc/dining-philosophers.html
-                readers-writers:
-                    text: Pełne rozwiązanie z hierarchią zasobów
+                dining-philosophers-resourceh-code:
+                    text: Rozwiązanie z hierarchią zasobów
                     relativeUrl: doc/dining-philosophers-resourceh-code.html
-                producers-consumers:
-                    text: Pełne rozwiązanie z kelnerem
+                dining-philosophers-waiter-code:
+                    text: Rozwiązanie z kelnerem
                     relativeUrl: doc/dining-philosophers-waiter-code.html
-            name: Problemy synchronizacyjne
+        readers-writers:
+            name: Problem czytelników i pisarzy
+            items:
+                readers-writers:
+                    text: Opis problemu
+                    relativeUrl: doc/readers-writers.html
+                readers-writers-rwp1:
+                    text: Rozwiązanie z faworyzowaniem czytelników
+                    relativeUrl: doc/readers-writers-rwp1.html
+                readers-writers-rwp2:
+                    text: Rozwiązanie z faworyzowaniem pisarzy
+                    relativeUrl: doc/readers-writers-rwp1.html
+                readers-writers-rwp3:
+                    text: Rozwiązanie bez zagłodzenia
+                    relativeUrl: doc/readers-writers-rwp3.html
         other:
             name: Problemy synchronizacyjne
             items:
@@ -39,7 +53,7 @@ menu:
                 producers-consumers:
                     text: Problem producentów i konsumentów
                     relativeUrl: doc/producers-consumers.html
-        other:
+        links:
             name: Przydatne linki
             items:
                 foo:
