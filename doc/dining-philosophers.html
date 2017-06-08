@@ -100,8 +100,8 @@
 <p><img src="https://mieszkomakuch.github.io/problemy-synchronizacyjne/img/resource_hierarchy_result.png" alt="resource_hierarchy_result" /></p>
 <p>Jak widać, dzięki hierarchi zasobów udało się <strong>uniknąć zakleszczenia</strong>.</p>
 <h3 id="psedudokod-rozwizania">Psedudokod rozwiązania</h3>
-<pre><code class="language-Pascal">var
-  widelce: tablica semaforów [0..4] := (1, 1, 1, 1, 1); 
+<pre><code class="language-cpp">var
+  widelce: tablica semaforów [0..4] := (1, 1, 1, 1, 1);
 
 process Filozof (i: 0..4);
 begin
@@ -109,7 +109,7 @@ begin
     Myśli;
     Wait (widelce[i]);
     Wait (widelce[(i+1) mod 5];
-    Je;
+    Je danie;
     Post (widelce[i]);
     Post (widelce[(i+1) mod 5];
   until false
