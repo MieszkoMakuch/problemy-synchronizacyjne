@@ -49,3 +49,4 @@ crashlytics-build.properties
 fabric.properties
 /CMakeLists.txt
 /src/dining-philosophers/.idea/
+/.couscous/

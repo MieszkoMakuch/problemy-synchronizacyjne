@@ -1,4 +1,4 @@
-# Fake news detector 00:49
+# Problemy synchronizacyjne 2:15
 Article and domain analyzer written in python 3 to help user detect fake news content.
 
 ## Online demo
