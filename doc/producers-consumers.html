@@ -122,7 +122,54 @@
 
         
         <section class="col-sm-9 col-lg-10 content">
-            <h1 id="problem-producentw-i-konsumentw">Problem producentów i konsumentów</h1>
+            <h1 id="problem-czytelnikw-i-pisarzy">Problem czytelników i pisarzy</h1>
+<p>W problemie producenta i konsumenta występują dwa rodzaje procesów: producent i konsument, którzy dzielą wspólny zasób - bufor dla produkowanych (konsumowanych) jednostek. Zadaniem producenta jest wytworzenie produktu, umieszczenie go w buforze i rozpoczęcie pracy od nowa. W tym samym czasie konsument ma pobrać produkt z bufora. Problemem jest taka synchronizacja procesów, żeby producent nie dodawał nowych jednostek gdy bufor jest pełny, a konsument nie pobierał gdy bufor jest pusty.</p>
+<p><img src="https://mieszkomakuch.github.io/problemy-synchronizacyjne/img/producers-consumers.jpg" alt="woman-reader_2256250b" /></p>
+<h2 id="opis-rozwizania">Opis rozwiązania</h2>
+<p>Rozwiązaniem dla producenta jest uśpienie procesu w momencie gdy bufor jest pełny. Pierwszy konsument, który pobierze element z bufora budzi proces producenta, który uzupełnia bufor. W analogiczny sposób usypiany jest konsument próbujący pobrać z pustego bufora. Pierwszy producent, po dodaniu nowego produktu umożliwi dalsze działanie konsumentowi. Nieprawidłowe rozwiązanie może skutkować <strong>zakleszczeniem</strong>.</p>
+<h3 id="pseudokod-rozwizania">Pseudokod rozwiązania</h3>
+<pre><code class="language-cpp">int BUFFER[BUFFER_SIZE]
+
+int ilosc_producentow
+int ilosc_konsumentow
+
+mutex buffer_mutex
+semafor zapelnione_miejsce // inicjalizuj 0
+semafor wolne_miejsce // inicjalizuj BUFFER_SIZE
+
+producent() {
+    while (1) {
+        // Produce item
+        item = produce_item
+
+        sem_(&amp;wolne_miejsce)
+        lock_mutex(&amp;buffer_mutex)
+
+        // Wstaw przedmiot do bufora
+        wstaw_przedmiot(item)
+
+        unlock_mutex(&amp;buffer_mutex)
+        post(&amp;zapelnione_miejsce)
+    }
+}
+
+konsument() {
+    while (1) {
+        sem_(&amp;zapelnione_miejsce)
+        lock_mutex(&amp;buffer_mutex)
+
+        // Pobierz przedmiot z bufora
+        item = pobierz_przedmiot()
+
+        unlock_mutex(&amp;buffer_mutex)
+        post(&amp;wolne_miejsce)
+
+        // Consume item
+    }
+    return 0
+}
+</code></pre>
+<h3><a href="https://mieszkomakuch.github.io/problemy-synchronizacyjne/doc/readers-writers-rwp1.html">Pełne rozwiązanie</a></h3>
         </section>
 
     </div>
