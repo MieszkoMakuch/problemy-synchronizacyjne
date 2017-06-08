@@ -121,10 +121,15 @@ end;
 </code></pre>
 <h3><a href="https://mieszkomakuch.github.io/problemy-synchronizacyjne/doc/dining-philosophers-resourceh-code.html">Pełne rozwiązanie z hierarchią zasobów</a></h3>
 <h2 id="rozwizanie-z-kelnerem--arbitrem">Rozwiązanie z kelnerem / arbitrem</h2>
+<p>Kolejnym nieskomplikowanym rozwiązaniem jest wprowadzenie kelnera. Filozofowie będą pytać go o pozwolenie przed wzięciem widelca. Ponieważ kelner jest świadomy, które widelce są aktualnie w użyciu, może nimi rozporządzać zapobiegając zakleszczeniom.</p>
 <h3 id="opis-rozwizania-1">Opis rozwiązania</h3>
+<p>Jeśli dostępne jest 5 widelców to tylko 4 filozofów będzie mogło siedzieć przy stole. Kelner zarządza tym kto i kiedy może usiąść przy stole: jeśli jest mniej niż 4 filozofów przy stole kolejny może dołączyć, jeśli nie kolejny musi czekać na pozwolenie kelnera.</p>
+<p>Sytuację prezentuje poniższa grafika:
+<img src="https://mieszkomakuch.github.io/problemy-synchronizacyjne/img/semaphore.png" alt="semaphore" /></p>
+<p>Rozwiązanie to <strong>zapobiega zakleszczeniu</strong>, ale wciąż może pojawić się <strong>głodzenie</strong>. Filozof może czekać w nieskończoność i nigdy nie zasiąść do stołu.</p>
 <h3 id="psedudokod-rozwizania-1">Psedudokod rozwiązania</h3>
 <pre><code class="language-cpp">var
-  kelner: semaphore := 4;
+  kelner: semafor := 4;
   widelce: tablica semaforów [0..4] := (1, 1, 1, 1, 1);
 
 process Filozof (i: 0..4);
