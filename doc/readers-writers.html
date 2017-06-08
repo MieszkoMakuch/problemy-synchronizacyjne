@@ -187,6 +187,56 @@ czytelnik() {
 }
 </code></pre>
 <h3><a href="https://mieszkomakuch.github.io/problemy-synchronizacyjne/doc/readers-writers-rwp1.html">Pełne rozwiązanie</a></h3>
+<h2 id="wariant-faworyzujcy-pisarzy">Wariant faworyzujący pisarzy</h2>
+<p>Czytelnicy nie mogą otrzymać dostępu do zasobu, jeżeli oczekuje na niego pisarz. W tej sytuacji oczekujący pisarz otrzymuje dostęp najwcześniej, jak to jest możliwe, czyli zaraz po opuszczeniu zasobu przez ostatni proces, który przybył przed nim. W tym wariancie może dojść do zagłodzenia oczekujących czytelników.</p>
+<h3 id="pseudokod-rozwizania-1">Pseudokod rozwiązania</h3>
+<pre><code class="language-cpp">int ilosc_czytelnikow, ilosc_pisarzy; //(wartosc poczatkowa = 0)
+semafor rmutex, wmutex, readTry, zrodlo; //(wartosc poczatkowa = 1)
+
+//czytelnik
+czytelnik() {
+&lt;ENTRY Sekcja&gt;
+  readTry.wait();
+  rmutex.wait();
+  ilosc_czytelnikow++;
+  if (ilosc_czytelnikow == 1)
+    zrodlo.wait();
+  rmutex.post();
+  readTry.post();
+
+&lt;Sekcja krytyczna&gt;
+ // Odbywa się czytanie
+
+&lt;EXIT Sekcja&gt;
+  rmutex.wait();
+  ilosc_czytelnikow--;
+  if (ilosc_czytelnikow == 0)
+    zrodlo.post();
+  rmutex.post();
+}
+
+//PISARZ
+pisarz() {
+&lt;ENTRY Sekcja&gt;
+  wmutex.wait();
+  ilosc_pisarzy++;
+  if (ilosc_pisarzy == 1)
+    readTry.wait();
+  wmutex.post();
+
+&lt;Sekcja krytyczna&gt;
+  zrodlo.wait();
+   // Odbywa się pisanie
+  zrodlo.post();
+
+&lt;EXIT Sekcja&gt;
+  wmutex.wait();
+  ilosc_pisarzy--;
+  if (ilosc_pisarzy == 0)
+    readTry.post();
+  wmutex.post();
+}</code></pre>
+<h3><a href="https://mieszkomakuch.github.io/problemy-synchronizacyjne/doc/readers-writers-rwp2.html">Pełne rozwiązanie</a></h3>
         </section>
 
     </div>
