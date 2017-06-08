@@ -81,29 +81,29 @@
         
         <section class="col-sm-9 col-lg-10 content">
             <h1 id="problem-ucztujcych-filozofw">Problem ucztujących filozofów</h1>
-<p>Problem ucztujących filozofów to klasyczny informatyczny problem synchronizacji. Jest to teoretyczne wyjaśnienie zakleszczenia i uniemożliwienia innym jednostkom korzystania z zasobów poprzez założenie, że każdy z filozofów bierze po jedym widelcu / po jednej pałeczce (do jedzenia ryżu), a dopiero potem próbuje zdobyć drgugi / drugą. Zakłada się, że jedzenie jedym widalecem / jedną pałeczką jest niemożliwe.</p>
+<p>Problem ucztujących filozofów to klasyczny informatyczny problem synchronizacji. Jest to teoretyczne wyjaśnienie zakleszczenia i uniemożliwienia innym jednostkom korzystania z zasobów poprzez założenie, że każdy z filozofów bierze po jednym widelcu / po jednej pałeczce (do jedzenia ryżu), a dopiero potem próbuje zdobyć drugi / drugą. Zakłada się, że jedzenie jednym widelcem / jedną pałeczką jest niemożliwe.</p>
 <p><img src="https://mieszkomakuch.github.io/problemy-synchronizacyjne/img/at_the_table.png" alt="at_the_table" /></p>
 <p>Problem ucztujących filozofów jest prezentacją problemu synchronizacji pracujących współbieżnie procesów.</p>
 <p>W projekcie zaprezentowane zostały 2 rozwiązania:</p>
 <ul>
-<li><strong>rozwiązanie z hierarhią zasobów</strong></li>
+<li><strong>rozwiązanie z hierarchią zasobów</strong></li>
 <li><strong>rozwiązanie z kelnerem/arbitrem</strong></li>
 </ul>
 <h2 id="opis-problemu">Opis problemu</h2>
 <p>Pięciu filozofów siedzi przy stole i każdy wykonuje jedną z dwóch czynności – albo je, albo rozmyśla. Stół jest okrągły, przed każdym z nich znajduje się miska ze spaghetti, a pomiędzy każdą sąsiadującą parą filozofów leży widelec, a więc każda osoba ma przy sobie dwie sztuki – po swojej lewej i prawej stronie. Ponieważ jedzenie potrawy jest trudne przy użyciu jednego widelca, zakłada się, że każdy filozof korzysta z dwóch. Dodatkowo nie ma możliwości skorzystania z widelca, który nie znajduje się bezpośrednio przed daną osobą. Problem ucztujących filozofów jest czasami przedstawiany przy użyciu ryżu, który musi być jedzony dwiema pałeczkami, co lepiej obrazuje sytuację.</p>
 <p>Filozofowie nigdy nie rozmawiają ze sobą, co stwarza zagrożenie <strong>zakleszczenia</strong> w sytuacji, gdy każdy z nich zabierze lewy widelec i będzie czekał na prawy (lub na odwrót).</p>
-<h2 id="rozwizanie-z-hierarhi-zasobw--widelcw">Rozwiązanie z hierarhią zasobów / widelców</h2>
-<p>Jedym z rozwiązań tego problemu jest możliwe przez ustalenie hierarchii dla wielców, którymi posługują sie filozofowie. i wprowadzenie zasady, że kolejność dostępu do widelców jest ustalona przez ten porządek, a ich zwalnianie następuje w odwrotnej kolejności. Ponadto dwa widelce, które nie są ze sobą w relacje nie mogą zostać użyte przez jednego filozofa w tym samym czasie.</p>
+<h2 id="rozwizanie-z-hierarchi-zasobw--widelcw">Rozwiązanie z hierarchią zasobów / widelców</h2>
+<p>Jednym z rozwiązań tego problemu jest możliwe przez ustalenie hierarchii dla widelców, którymi posługują się filozofowie. i wprowadzenie zasady, że kolejność dostępu do widelców jest ustalona przez ten porządek, a ich zwalnianie następuje w odwrotnej kolejności. Ponadto dwa widelce, które nie są ze sobą w relacje nie mogą zostać użyte przez jednego filozofa w tym samym czasie.</p>
 <h3 id="opis-rozwizania">Opis rozwiązania</h3>
 <p>Ustalmy zatem hierarchię i ponumerujmy widelce od 1 do 5:</p>
 <p><img src="https://mieszkomakuch.github.io/problemy-synchronizacyjne/img/forks.png" alt="forks_with_numbers" /></p>
-<p>Zgodnie z zasadami, aby użyć dwóch widelców filozof musi napierw podnieść widelec z niższym numerem. Sytuację te przedstawia poniższa grafika:</p>
+<p>Zgodnie z zasadami, aby użyć dwóch widelców filozof musi najpierw podnieść widelec z niższym numerem. Sytuację te przedstawia poniższa grafika:</p>
 <p><img src="https://mieszkomakuch.github.io/problemy-synchronizacyjne/img/resource_hierarchy.png" alt="resource_hierarchy" /></p>
-<p>Zwróćmy uwagę, że zaznaczony na czerwono filozof <strong>nie może podnieść widelca 5!</strong> Jest to związane z przyjętą zasadą - najpierw pusiałby podnieśc witelec o niższym numerze.</p>
-<p>Oznacza to, że widelec 5 może sotać podniesiony przez sąsiadującego filozofa, przez co jest on teraz w stanie konsumować danie, co przedstawia poniższa grafika:</p>
+<p>Zwróćmy uwagę, że zaznaczony na czerwono filozof <strong>nie może podnieść widelca 5!</strong> Jest to związane z przyjętą zasadą - najpierw musiałby podnieść widelec o niższym numerze.</p>
+<p>Oznacza to, że widelec 5 może zostać podniesiony przez sąsiadującego filozofa, przez co jest on teraz w stanie konsumować danie, co przedstawia poniższa grafika:</p>
 <p><img src="https://mieszkomakuch.github.io/problemy-synchronizacyjne/img/resource_hierarchy_result.png" alt="resource_hierarchy_result" /></p>
-<p>Jak widać, dzięki hierarchi zasobów udało się <strong>uniknąć zakleszczenia</strong>.</p>
-<h3 id="psedudokod-rozwizania">Psedudokod rozwiązania</h3>
+<p>Jak widać, dzięki hierarchii zasobów udało się <strong>uniknąć zakleszczenia</strong>.</p>
+<h3 id="pseudokod-rozwizania">Pseudokod rozwiązania</h3>
 <pre><code class="language-cpp">var
   widelce: tablica semaforów [0..4] := (1, 1, 1, 1, 1);
 
@@ -124,10 +124,10 @@ end;
 <p>Kolejnym nieskomplikowanym rozwiązaniem jest wprowadzenie kelnera. Filozofowie będą pytać go o pozwolenie przed wzięciem widelca. Ponieważ kelner jest świadomy, które widelce są aktualnie w użyciu, może nimi rozporządzać zapobiegając zakleszczeniom.</p>
 <h3 id="opis-rozwizania-1">Opis rozwiązania</h3>
 <p>Jeśli dostępne jest 5 widelców to tylko 4 filozofów będzie mogło siedzieć przy stole. Kelner zarządza tym kto i kiedy może usiąść przy stole: jeśli jest mniej niż 4 filozofów przy stole kolejny może dołączyć, jeśli nie kolejny musi czekać na pozwolenie kelnera.</p>
-<p>Sytuację prezentuje poniższa grafika:
-<img src="https://mieszkomakuch.github.io/problemy-synchronizacyjne/img/semaphore.png" alt="semaphore" /></p>
+<p>Sytuację prezentuje poniższa grafika:</p>
+<p><img src="https://mieszkomakuch.github.io/problemy-synchronizacyjne/img/semaphore.png" alt="semaphore" /></p>
 <p>Rozwiązanie to <strong>zapobiega zakleszczeniu</strong>, ale wciąż może pojawić się <strong>głodzenie</strong>. Filozof może czekać w nieskończoność i nigdy nie zasiąść do stołu.</p>
-<h3 id="psedudokod-rozwizania-1">Psedudokod rozwiązania</h3>
+<h3 id="pseudokod-rozwizania-1">Pseudokod rozwiązania</h3>
 <pre><code class="language-cpp">var
   kelner: semafor := 4;
   widelce: tablica semaforów [0..4] := (1, 1, 1, 1, 1);
