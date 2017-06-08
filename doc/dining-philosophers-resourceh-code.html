@@ -50,7 +50,7 @@
                     <ul class="nav nav-pills nav-stacked">
                                                     <li class="">
                                 <a href="https://mieszkomakuch.github.io/problemy-synchronizacyjne/doc/dining-philosophers.html">
-                                    Problem ucztujących filozofów
+                                    Opis problemu
                                 </a>
                             </li>
                                                     <li class="">
@@ -92,6 +92,30 @@
         <section class="col-sm-9 col-lg-10 content">
             <h1 id="problem-ucztujcych-filozofw">Problem ucztujących filozofów</h1>
 <p>Rozwiązanie z hierarchią zasobów</p>
+<h2 id="uycie">Użycie</h2>
+<p>Przejdź do folderu z kodem źródłowym, następnie:</p>
+<pre><code class="language-bash">make
+./dining-philosophers-resource-hierarchy [-d]</code></pre>
+<p>Parametr <code>-d</code> - debug pozwala wypisywać szczegółowe informacje o przebiegu algorytmu.</p>
+<p>Przykładowy wynik, bez parametru <code>-d</code> (częściowy):</p>
+<pre><code class="language-bash">Philosopher id: 0, TID=140467673151232 is eating now
+Philosopher id: 2, TID=140467656365824 is eating now
+Philosopher id: 1, TID=140467664758528 is eating now
+Philosopher id: 3, TID=140467647973120 is eating now
+Philosopher id: 2, TID=140467656365824 is eating now
+Philosopher id: 4, TID=140467639580416 is eating now
+Philosopher id: 1, TID=140467664758528 is eating now
+Philosopher id: 3, TID=140467647973120 is eating now
+Philosopher id: 0, TID=140467673151232 is eating now
+Philosopher id: 2, TID=140467656365824 is eating now
+Philosopher id: 3, TID=140467647973120 is eating now
+Philosopher id: 1, TID=140467664758528 is eating now
+Philosopher id: 4, TID=140467639580416 is eating now
+Philosopher id: 2, TID=140467656365824 is eating now
+Philosopher id: 1, TID=140467664758528 is eating now
+Philosopher id: 3, TID=140467647973120 is eating now
+</code></pre>
+<h2 id="kod-rdowy">Kod źródłowy</h2>
 <pre><code class="language-cpp">#include &lt;stdio.h&gt;
 #include &lt;stdlib.h&gt;
 #include &lt;signal.h&gt;
