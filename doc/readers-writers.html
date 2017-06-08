@@ -128,17 +128,65 @@
         
         <section class="col-sm-9 col-lg-10 content">
             <h1 id="problem-czytelnikw-i-pisarzy">Problem czytelników i pisarzy</h1>
+<p>Problem czytelników i pisarzy to kolejny, znany problem synchronizacji. Dotyczy on dostępu do jednego zasobu dwóch rodzajów procesów: dokonujących w nim zmian (pisarzy) i niedokonujących w nim zmian (czytelników).</p>
+<p>Jednoczesny dostęp do zasobu może uzyskać dowolna liczba czytelników. Pisarz może otrzymać tylko dostęp wyłączny. Równocześnie z pisarzem dostępu do zasobu nie może otrzymać ani inny pisarz, ani czytelnik, gdyż mogłoby to spowodować błędy.</p>
 <p><img src="https://mieszkomakuch.github.io/problemy-synchronizacyjne/img/woman-reader_2256250b.jpg" alt="woman-reader_2256250b" /></p>
-<p>W projekcie zaprezentowane zostały 2 rozwiązania:</p>
+<p><strong>W projekcie zaimplementowanych zostało 6 rozwiązań</strong>:</p>
+<ol>
+<li>Wariant faworyzujący czytelników
 <ul>
-<li><strong>rozwiązanie z </strong></li>
-</ul>
-<h2 id="opis-problemu">Opis problemu</h2>
-<h2 id="rozwizanie-z-hierarchi-zasobw--widelcw">Rozwiązanie z hierarchią zasobów / widelców</h2>
-<h3 id="opis-rozwizania">Opis rozwiązania</h3>
+<li>wykorzystując do synchronizacji semafory</li>
+<li>wykorzystując do synchronizacji muteks</li>
+</ul></li>
+<li>Wariant faworyzujący pisarzy
+<ul>
+<li>wykorzystując do synchronizacji semafory</li>
+<li>wykorzystując do synchronizacji muteks</li>
+</ul></li>
+<li>Wariant bez głodzeniapisarzy
+<ul>
+<li>wykorzystując do synchronizacji semafory</li>
+<li>wykorzystując do synchronizacji muteks</li>
+</ul></li>
+</ol>
+<h2 id="wariant-faworyzujcy-czytelnikw">Wariant faworyzujący czytelników</h2>
+<p>Czytelnicy nie mają obowiązku czekania na otrzymanie dostępu do zasobu, jeśli w danym momencie nie otrzymał go pisarz. Ponieważ pisarz może otrzymać tylko dostęp wyłączny, musi czekać na opuszczenie zasobu przez wszystkie inne procesy. Jeśli czytelnicy przybywają odpowiednio szybko, może dojść do zagłodzenia pisarza: w tej sytuacji będzie on w nieskończoność czekał na zwolnienie zasobu przez wciąż napływających nowych czytelników.</p>
 <h3 id="pseudokod-rozwizania">Pseudokod rozwiązania</h3>
-<pre><code class="language-cpp"></code></pre>
-<h3><a href="https://mieszkomakuch.github.io/problemy-synchronizacyjne/doc/.html">Pełne rozwiązanie </a></h3>
+<pre><code class="language-cpp">semafor zrodlo=1;
+semafor rmutex=1;
+licznosc_czytelnikow=0;
+
+pisarz() {
+    zrodlo.wait();
+
+    &lt;Sekcja krytyczna&gt;
+    // Pisanie do źródła
+
+    &lt;EXIT Section&gt;
+    zrodlo.post();
+}
+
+czytelnik() {
+    rmutex.wait();
+    &lt;Sekcja krytyczna&gt;
+    licznosc_czytelnikow++;
+    if (licznosc_czytelnikow == 1)
+        zrodlo.wait();
+    &lt;EXIT Sekcja krytyczna&gt;
+    rmutex.post();
+
+    // Czytenie ze źródła
+
+    rmutex.wait();
+    &lt;Sekcja krytyczna&gt;
+    licznosc_czytelnikow--;
+    if (licznosc_czytelnikow == 0)
+        zrodlo.post();
+    &lt;EXIT Sekcja krytyczna&gt;
+    rmutex.post();
+}
+</code></pre>
+<h3><a href="https://mieszkomakuch.github.io/problemy-synchronizacyjne/doc/readers-writers-rwp1.html">Pełne rozwiązanie</a></h3>
         </section>
 
     </div>
