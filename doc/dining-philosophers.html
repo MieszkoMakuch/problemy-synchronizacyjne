@@ -83,7 +83,12 @@
             <h1 id="problem-ucztujcych-filozofw">Problem ucztujących filozofów</h1>
 <p>Problem ucztujących filozofów to klasyczny informatyczny problem synchronizacji. Jest to teoretyczne wyjaśnienie zakleszczenia i uniemożliwienia innym jednostkom korzystania z zasobów poprzez założenie, że każdy z filozofów bierze po jedym widelcu / po jednej pałeczce (do jedzenia ryżu), a dopiero potem próbuje zdobyć drgugi / drugą. Zakłada się, że jedzenie jedym widalecem / jedną pałeczką jest niemożliwe.</p>
 <p><img src="https://mieszkomakuch.github.io/problemy-synchronizacyjne/img/at_the_table.png" alt="at_the_table" /></p>
-<p>Problem ucztujących filozofów jest prezentacją problemu synchronizacji pracujących współbieżnie procesów. Istnieje kilka możliwych rozwiązań tego problemu, które zostały rozwiązane w tym projekcie.</p>
+<p>Problem ucztujących filozofów jest prezentacją problemu synchronizacji pracujących współbieżnie procesów.</p>
+<p>W projekcie zaprezentowane zostały 2 rozwiązania:</p>
+<ul>
+<li><strong>rozwiązanie z hierarhią zasobów</strong></li>
+<li><strong>rozwiązanie z kelnerem/arbitrem</strong></li>
+</ul>
 <h2 id="opis-problemu">Opis problemu</h2>
 <p>Pięciu filozofów siedzi przy stole i każdy wykonuje jedną z dwóch czynności – albo je, albo rozmyśla. Stół jest okrągły, przed każdym z nich znajduje się miska ze spaghetti, a pomiędzy każdą sąsiadującą parą filozofów leży widelec, a więc każda osoba ma przy sobie dwie sztuki – po swojej lewej i prawej stronie. Ponieważ jedzenie potrawy jest trudne przy użyciu jednego widelca, zakłada się, że każdy filozof korzysta z dwóch. Dodatkowo nie ma możliwości skorzystania z widelca, który nie znajduje się bezpośrednio przed daną osobą. Problem ucztujących filozofów jest czasami przedstawiany przy użyciu ryżu, który musi być jedzony dwiema pałeczkami, co lepiej obrazuje sytuację.</p>
 <p>Filozofowie nigdy nie rozmawiają ze sobą, co stwarza zagrożenie <strong>zakleszczenia</strong> w sytuacji, gdy każdy z nich zabierze lewy widelec i będzie czekał na prawy (lub na odwrót).</p>
